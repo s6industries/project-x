@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://d5vpwqubc7qr"]
+
+[ext_resource type="FontFile" uid="uid://c2djudtcsv28h" path="res://8x8-pixel.ttf" id="1_1vuol"]
+[ext_resource type="Script" path="res://world.gd" id="1_08pvc"]
+
+[node name="World" type="Node2D" node_paths=PackedStringArray("mylabel")]
+script = ExtResource("1_08pvc")
+mylabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_1vuol")
+theme_override_font_sizes/font_size = 11
+text = "________________________________________________________________________
+___##################################################################___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                            S  h                                #___
+___#                               @                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___#                                                                #___
+___##################################################################___
+________________________________________________________________________"
