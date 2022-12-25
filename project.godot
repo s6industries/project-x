@@ -10,11 +10,17 @@ config_version=5
 
 _global_script_classes=[{
 "base": "Node",
+"class": &"MetabotSimulator",
+"language": &"GDScript",
+"path": "res://metabot_simulator.gd"
+}, {
+"base": "Node",
 "class": &"TestClass",
 "language": &"GDScript",
 "path": "res://test_class.gd"
 }]
 _global_script_class_icons={
+"MetabotSimulator": "",
 "TestClass": ""
 }
 
