@@ -51,8 +51,8 @@ func test_agent():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	test_potato()
-#	test_agent()
+#	test_potato()
+	test_agent()
 	
 	load_world()
 	initiate_timer()
