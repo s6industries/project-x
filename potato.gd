@@ -17,6 +17,41 @@ func _init():
 	
 	species = "potato"
 	
+	var recipe = Recipe.new()
+	recipe.ingredients = {
+		"water": 2,
+		"minerals": 2
+	}
+	recipe.results = {
+		"plantcell": 1
+	}
+	
+	converter.conversion_recipes = [
+		recipe
+	]
+	converter.converted = {
+		"plantcell": 0
+	}
+	
+	var blueprint = Blueprint.new()
+	blueprint.materials = {
+		"plantcell": 3
+	}
+	blueprint.results = {
+		"root": 1
+	}
+	
+	composer.blueprints = [
+		blueprint
+	]
+	composer.bodypart_templates = {
+		"root": {
+			"name": "root",
+			"mass": 1.0,
+			"layer": "underground"
+		}
+	}
+	
 	# total body mass required to progress
 	life_stage_progression = [
 		3, 5, 10

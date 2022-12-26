@@ -40,11 +40,19 @@ func initiate_timer():
 	add_child(timer)
 
 
+func test_potato():
+	var metabot_simulator = MetabotSimulator.new()
+	add_child(metabot_simulator)
+	
+func test_agent():
+	var player_agent = Agent.PlayerAgent.new()
+	add_child(player_agent)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	var metabot_simulator = MetabotSimulator.new()
-	add_child(metabot_simulator)
+	test_potato()
+#	test_agent()
 	
 	load_world()
 	initiate_timer()

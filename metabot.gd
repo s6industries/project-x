@@ -185,12 +185,12 @@ class mCollector extends mComponent:
 class Recipe:
 	
 	var ingredients = {
-		"water": 2,
-		"minerals": 2
+#		"water": 2,
+#		"minerals": 2
 	}
 	
 	var results = {
-		"plantcell": 1
+#		"plantcell": 1
 	}
 	
 	func _init():
@@ -223,7 +223,7 @@ class mConverter extends  mComponent:
 	]
 	
 	var converted = {
-		"plantcell": 0
+#		"plantcell": 0
 	}
 	
 	func _init():
@@ -253,11 +253,19 @@ class Blueprint:
 	
 	var active = true
 	var materials = {
-		"plantcell": 3
+#		"plantcell": 3
 	}
 	
 	var results = {
-		"root": 1
+#		"root": 1
+	}
+	
+	var bodypart_templates =  {
+#		"root": {
+#			"name": "root",
+#			"mass": 1.0,
+#			"layer": "underground"
+#		}
 	}
 	
 	func _init():
@@ -272,28 +280,19 @@ class Blueprint:
 		
 		return true
 	
-	func execute(converter:mConverter):
+	func execute(converter:mConverter, templates:Dictionary):
 		for m in materials:
 			converter.converted[m] -= materials[m]
 		
-		var bodyparts = []
+		var bodyparts_created = []
 		
 		for r in results:
 			var count = results[r]
 			while count > 0:
-				bodyparts.append(BODYPARTS[r])
+				bodyparts_created.append(templates[r])
 				count -= 1
 			
-		return bodyparts
-
-		
-const BODYPARTS = {
-	"root": {
-		"name": "root",
-		"mass": 1.0,
-		"layer": "underground"
-	}
-}
+		return bodyparts_created
 
 class mComposer extends mComponent:
 #	var objects_input = []
@@ -304,8 +303,16 @@ class mComposer extends mComponent:
 	var body = null
 	
 	var blueprints = [
-		Blueprint.new()
+#		Blueprint.new()
 	]
+	
+	var bodypart_templates =  {
+#		"root": {
+#			"name": "root",
+#			"mass": 1.0,
+#			"layer": "underground"
+#		}
+	}
 	
 	func _init():
 		print("mComposer")
@@ -322,7 +329,7 @@ class mComposer extends mComponent:
 		for blueprint in blueprints:
 			if blueprint.active:
 				if blueprint.has_materials(converter):
-					var bodyparts = blueprint.execute(converter)
+					var bodyparts = blueprint.execute(converter, bodypart_templates)
 					body.append_array(bodyparts)
 			
 

@@ -27,17 +27,25 @@ class_name Agent
 var metabot:Metabot = null
 var metabots = []
 
+var model_state = {
+	"body_position": [0,0]
+}
 var motor = null
+var motors = {}
+
+var actuator = null
+var actuators = {}
 
 var inputs = []
 var commands = []
 var signals = []
-var actuators = {}
-var motors = {}
 var actions = []
 
+var executing_action = false
+
 var timer: Timer = null
-var tick_interval = 0.3
+var tick_interval = 0.7
+#var tick_interval = 0.3
 
 func initiate_timer():
 	timer = Timer.new()
@@ -50,12 +58,19 @@ func initiate_timer():
 ## Time ticks for the Agent when it is conscious.
 ## When it is unconscious/sleeping, time does not tick.
 func tick():
-	print("TICK.")
+	print("TICK. Agent")
 #	for mbot in metabots:
 #		mbot.tick()
-	process_input()
-	create_command()
+	var input = process_input()
 	
+	if input == null:
+		print("no input")
+	else:
+		print(input)
+		create_command()
+		send_signal()
+		execute_action()
+		report_status()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -74,21 +89,12 @@ func attach_metabot(mbot:Metabot):
 # TODO handle platform specific input before this (ex. gamepad vs touch vs keyboard)
 # https://docs.godotengine.org/en/stable/classes/class_%40globalscope.html#enum-globalscope-keylist
 func send_input(input):
-	print("input: %s" % input)
-	inputs.appenmd(input)
+	print("send_input: %s" % input)
+	inputs.append(input)
 
 func process_input():
+	print("process_input")
 	var input = inputs.pop_front()
-	
-	match input:
-		KEY_DOWN:
-			input = "down"	
-		KEY_UP:
-			input = "up"
-		KEY_RIGHT: 
-			input = "right"
-		KEY_LEFT:
-			input = "left"
 			
 	return input
 	
@@ -108,5 +114,59 @@ func report_status():
 # inner classes
 
 class PlayerAgent extends Agent:
+	
+	var timer_input = null
+	var tick_interval_input = 0.3
+	
 	func _init():
 		print("PlayerAgent")
+		
+	func _ready():
+		print("PlaeyrAgent ready")
+#		initiate_timer_input()
+		super.initiate_timer()
+	
+	func _input(event):
+#		print(event.as_text())
+		
+		# directly mapping raw input to actions
+#		if event is InputEventKey and event.pressed:
+#			print(event.as_text())
+#			var event_key = event as InputEventKey
+#
+#			if event_key.keycode == KEY_T:
+#				if event_key.shift_pressed:
+#					print("Shift+T was pressed")
+#				else:
+#					print("T was pressed")
+#
+		# using Input Maps to abstract away the raw input outside of scripts
+		# Project -> Project Settings -> Input Map => Show Built-in Action
+		if event.is_action_type():
+			var input = null
+			print(event.as_text())
+			if event.is_action_pressed("ui_down"):
+				input = "down"
+			if event.is_action_pressed("ui_up"):
+				input = "up"
+			if event.is_action_pressed("ui_left"):
+				input = "left"
+			if event.is_action_pressed("ui_right"):
+				input = "right"
+			
+			if input != null:
+				print(input)
+				send_input(input)
+			
+	func initiate_timer_input():
+		timer_input = Timer.new()
+		timer_input.set_one_shot(false)
+		timer_input.connect("timeout", self.tick_input)
+		add_child(timer_input)
+		# autostart
+		timer_input.start(tick_interval_input)
+		
+	func tick_input():
+		print("tick_input")
+
+#https://docs.godotengine.org/en/stable/classes/class_input.html
