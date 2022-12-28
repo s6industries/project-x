@@ -1,0 +1,398 @@
+--- Debugging process started ---
+Godot Engine v4.0.beta9.official.e780dc332 - https://godotengine.org
+Vulkan API 1.2.231 - Using Vulkan Device #0: Apple - Apple M1 Pro
+ 
+MetabotSimulator
+_ready
+mCollector
+Recipe
+mConverter
+Blueprint
+mComposer
+Metabot
+FOUND PLAYER
+["________________________________________________________________________", "___##################################################################___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                            S  h                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___#                                                                #___", "___##################################################################___", "________________________________________________________________________", ""]
+HELLO FROM TEST CLASS
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 0.000000
+tick: mComposer
+body mass: 0.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 1.000000
+tick: mComposer
+body mass: 0.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 1.000000
+tick: mComposer
+body mass: 0.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 2.000000
+tick: mComposer
+body mass: 0.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 2.000000
+tick: mComposer
+body mass: 0.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 3.000000
+tick: mComposer
+bodypart: root
+body mass: 1.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 0.000000
+tick: mComposer
+bodypart: root
+body mass: 1.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+body mass: 1.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+body mass: 1.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+body mass: 1.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+body mass: 1.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 3.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+body mass: 2.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 0.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+body mass: 2.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+body mass: 2.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+body mass: 2.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+body mass: 2.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+body mass: 2.000000
+species: potato, instance: 0.000000, life_stage: 0.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 3.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 3.000000
+! life_stage progressed to 1.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 0.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 3.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 3.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 3.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 3.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 3.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 3.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 4.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 0.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 4.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 4.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 1.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 4.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 4.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converted: plantcell x 2.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 4.000000
+species: potato, instance: 0.000000, life_stage: 1.000000
+collector: pool count: 0.000000
+collection water count: 1.000000
+collection minerals count: 1.000000
+TICK.
+tick: mCollector
+tick: mConverter
+converter result: plantcell x 1.000000
+converted: plantcell x 3.000000
+tick: mComposer
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+bodypart: root
+body mass: 5.000000
+! life_stage progressed to 2.000000
+species: potato, instance: 0.000000, life_stage: 2.000000
+collector: pool count: 0.000000
+collection water count: 0.000000
+collection minerals count: 0.000000
+--- Debugging process stopped ---

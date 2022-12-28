@@ -10,11 +10,35 @@ config_version=5
 
 _global_script_classes=[{
 "base": "Node",
+"class": &"Agent",
+"language": &"GDScript",
+"path": "res://agent.gd"
+}, {
+"base": "Node",
+"class": &"Metabot",
+"language": &"GDScript",
+"path": "res://metabot.gd"
+}, {
+"base": "Node",
+"class": &"MetabotSimulator",
+"language": &"GDScript",
+"path": "res://metabot_simulator.gd"
+}, {
+"base": "Metabot",
+"class": &"Potato",
+"language": &"GDScript",
+"path": "res://potato.gd"
+}, {
+"base": "Node",
 "class": &"TestClass",
 "language": &"GDScript",
 "path": "res://test_class.gd"
 }]
 _global_script_class_icons={
+"Agent": "",
+"Metabot": "",
+"MetabotSimulator": "",
+"Potato": "",
 "TestClass": ""
 }
 

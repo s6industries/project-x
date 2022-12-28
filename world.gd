@@ -14,6 +14,8 @@ var timer: Timer = null
 var can_move: bool = true
 
 
+const MetabotSimulator = preload("res://metabot_simulator.gd")
+
 func load_world():
 	var file_path = "res://world.txt"
 	var file = FileAccess.open(file_path, FileAccess.READ)
@@ -38,8 +40,20 @@ func initiate_timer():
 	add_child(timer)
 
 
+func test_potato():
+	var metabot_simulator = MetabotSimulator.new()
+	add_child(metabot_simulator)
+	
+func test_agent():
+	var player_agent = Agent.PlayerAgent.new()
+	add_child(player_agent)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+#	test_potato()
+	test_agent()
+	
 	load_world()
 	initiate_timer()
 	
