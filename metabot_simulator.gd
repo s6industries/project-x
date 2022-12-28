@@ -26,22 +26,23 @@ func tick():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("_ready")
-	
+	initiate_timer()
 
+
+func plant_potato(id: int):
+	# Plant a potato
 	var pool_water = Metabot.Pool.new("water", 0)
 	pool_water.add(100)
 	var pool_minerals = Metabot.Pool.new("minerals", 0)
 	pool_minerals.add(100)
 
-	var potato = Potato.new()
+	var potato = Potato.new(id)
 
 	potato.collector.add_source(pool_water)
 	potato.collector.add_source(pool_minerals)
 
 	metabots.append(potato)
-
-	initiate_timer()
-
+	return potato
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

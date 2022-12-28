@@ -2,6 +2,8 @@ extends Node
 
 class_name Metabot
 
+signal life_stage_progressed
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -37,15 +39,17 @@ var components = [
 
 var life_stage = 0
 var life_stage_progression = []
+var id = null
 
 var body_mass = 0
 
-func _init():
+func _init(temp_id: int):
+	id = temp_id
 	print("Metabot")
 	converter.attach_collector(collector)
 	composer.attach_converter(converter)
 	composer.attach_body(body)
-	
+
 # 1 tick = 1 hour, game time
 # 1 day, game time = 24 ticks
 func tick():
@@ -65,8 +69,9 @@ func check_life_stage():
 	print("body mass: %f" % body_mass)
 	if body_mass >= life_stage_progression[life_stage]:
 		life_stage += 1
-
 		print(">>> !!! life_stage progressed to %f !!!" % life_stage)
+		# emit_signal("life_stage_progressed", life_stage)
+		emit_signal("life_stage_progressed", id, life_stage)
 
 func report_status():
 	var log = "species: %s, instance: %f, life_stage: %f"

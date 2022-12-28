@@ -12,8 +12,8 @@ func _process(delta):
 	pass
 
 
-func _init():
-	super._init()
+func _init(id: int):
+	super._init(id)
 	
 	species = "potato"
 	
@@ -54,7 +54,7 @@ func _init():
 	
 	# total body mass required to progress
 	life_stage_progression = [
-		3, 5, 10
+		3, 5, 10, 20
 	]
 
 # input water, minerals
