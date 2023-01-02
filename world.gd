@@ -5,6 +5,7 @@ extends Node2D
 
 enum State { IDLE, MOVING, ACTION }
 const PLAYER = "@"
+const WALL = "#"
 const POTATO_STAGE = [".", ";", "i", "P"]
 const MOVE_DELAY = 0.12
 const FONT_OFFSET = Vector2i(3, 4)
@@ -21,7 +22,7 @@ var can_move: bool = true
 var metabot_simulator
 var potato_stage: int
 var diagonal_moving_toggle: bool = false
-
+var inventory: Array = Array()
 
 const MetabotSimulator = preload("res://metabot_simulator.gd")
 
@@ -159,6 +160,8 @@ func move(direction: Vector2i):
 
 
 func is_position_walkable(pos):
+	if world_map[pos[1]][pos[0]] == WALL:
+		return false
 	return true
 
 
