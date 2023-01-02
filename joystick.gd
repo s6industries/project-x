@@ -91,6 +91,7 @@ func _input(event: InputEvent) -> void:
 			if joystick_mode == JoystickMode.DYNAMIC or (joystick_mode == JoystickMode.FIXED and _is_point_inside_base(event.position)):
 				if joystick_mode == JoystickMode.DYNAMIC:
 					_move_base(event.position)
+				show()
 				_touch_index = event.index
 				_tip.modulate = pressed_color
 				_update_joystick(event.position)
@@ -179,6 +180,7 @@ func _update_input_actions():
 
 
 func _reset():
+	hide()
 	_pressed = false
 	_output = Vector2.ZERO
 	_touch_index = -1

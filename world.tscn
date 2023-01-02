@@ -4,14 +4,12 @@
 [ext_resource type="Script" path="res://world.gd" id="1_08pvc"]
 [ext_resource type="PackedScene" uid="uid://cu4861ql4jhom" path="res://joystick.tscn" id="4_ipbva"]
 
-[node name="World" type="Node2D" node_paths=PackedStringArray("world_label")]
-position = Vector2(84, 31)
+[node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "player_marker")]
 script = ExtResource("1_08pvc")
-world_label = NodePath("CanvasLayer/Label")
+world_label = NodePath("Label")
+player_marker = NodePath("PlayerPosition")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="Label" type="Label" parent="."]
 offset_right = 432.0
 offset_bottom = 336.0
 size_flags_horizontal = 3
@@ -42,6 +40,19 @@ ___#                                                                #___
 ___#                                                                #___
 ___##################################################################___
 ________________________________________________________________________"
+
+[node name="PlayerPosition" type="Marker2D" parent="."]
+position = Vector2(3, 4)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="PlayerPosition"]
+position = Vector2(-3, -4)
+remote_path = NodePath("../../Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(0, 100)
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Joystick" parent="CanvasLayer" instance=ExtResource("4_ipbva")]
 joystick_mode = 1

@@ -1,11 +1,14 @@
 extends Node2D
 
 @export var world_label: Label
+@export var player_marker: Marker2D
 
 enum State { IDLE, MOVING, ACTION }
 const PLAYER = "@"
 const POTATO_STAGE = [".", ";", "i", "P"]
 const MOVE_DELAY = 0.12
+const FONT_OFFSET = Vector2i(3, 4)
+const FONT_SIZE = Vector2i(6, 14)
 
 var player_pos: Vector2i
 var input_direction: Vector2i
@@ -18,6 +21,7 @@ var can_move: bool = true
 var metabot_simulator
 var potato_stage: int
 var diagonal_moving_toggle: bool = false
+
 
 const MetabotSimulator = preload("res://metabot_simulator.gd")
 
@@ -92,7 +96,7 @@ func potato_life_stage_progressed(id, stage):
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 	match state:
 		State.IDLE:
 			idle_state()
@@ -159,6 +163,8 @@ func update_world():
 	var temp_world = world_map.duplicate()
 	if y < len(temp_world) and x < len(temp_world[0]):
 		temp_world[y][x] = PLAYER
+		player_marker.position.x = x * FONT_SIZE.x + FONT_OFFSET.x
+		player_marker.position.y = y * FONT_SIZE.y + FONT_OFFSET.y
 	
 	# Temp potato. TODO
 	for id in metabots:
