@@ -2,7 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://c2djudtcsv28h" path="res://8x8-pixel.ttf" id="1_1vuol"]
 [ext_resource type="Script" path="res://world.gd" id="1_08pvc"]
-[ext_resource type="PackedScene" path="res://joystick/joystick.tscn" id="3_0f2o7"]
+[ext_resource type="PackedScene" uid="uid://ckk0xa2w80n7a" path="res://joystick/joystick.tscn" id="3_0f2o7"]
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "player_marker")]
 script = ExtResource("1_08pvc")
@@ -55,3 +55,4 @@ current = true
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Joystick" parent="CanvasLayer" instance=ExtResource("3_0f2o7")]
+joystick_mode = 1

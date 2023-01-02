@@ -46,19 +46,12 @@ var _pressed: bool = false :
 	set(value):
 		_pressed = value
 
-#var _pressed := false setget , is_pressed
-#func is_pressed() -> bool:
-#	return _pressed
-
 # The joystick output.
 var _output: Vector2 = Vector2.ZERO :
 	get:
 		return _output
 	set(value):
 		_output = value
-#var _output := Vector2.ZERO setget , get_output
-#func get_output() -> Vector2:
-#	return _output
 
 #### PRIVATE VARIABLES ####
 
@@ -78,8 +71,6 @@ var _touch_index : int = -1
 
 func _ready() -> void:
 	pass
-	#	if not OS.has_touchscreen_ui_hint() and visibility_mode == VisibilityMode.TOUCHSCREEN_ONLY:
-	#		hide()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
@@ -112,17 +103,13 @@ func _move_tip(new_position: Vector2) -> void:
 
 func _is_point_inside_joystick_area(point: Vector2) -> bool:
 	var scale = get_global_transform_with_canvas().get_scale()
-	print("JOYSTICK_AREA (", global_position.x, ",", global_position.y,") (",  size.x, ",", size.y, ") (",  scale.x, ",", scale.y, ") (", point.x, ",", point.y, ")")
+	# print("JOYSTICK_AREA (", global_position.x, ",", global_position.y,") (",  size.x, ",", size.y, ") (",  scale.x, ",", scale.y, ") (", point.x, ",", point.y, ")")
 	var x_upper_limit = size.x * scale.x + global_position.x
 	var y_upper_limit = size.y * scale.y + global_position.y
-	print("JOYSTICK X LIMITS:", global_position.x, ", ", x_upper_limit)
-	print("JOYSTICK Y LIMITS:", global_position.y, ", ", y_upper_limit)
+	# print("JOYSTICK X LIMITS:", global_position.x, ", ", x_upper_limit)
+	# print("JOYSTICK Y LIMITS:", global_position.y, ", ", y_upper_limit)
 	var x: bool = point.x >= global_position.x and point.x <= x_upper_limit
 	var y: bool = point.y >= global_position.y and point.y <= y_upper_limit
-	if x and y:
-		print("JOYSTICK TRUE!!")
-	else:
-		print("JOYSTICK FALSE!!")
 	return x and y
 
 func _is_point_inside_base(point: Vector2) -> bool:
@@ -152,28 +139,23 @@ func _update_joystick(touch_position: Vector2) -> void:
 
 
 func _update_input_actions():
-	print("OUTPUT:", _output)
 	# LEFT
 	if _output.x < 0:
-		print("OUTPUT LEFT!")
 		Input.action_press(action_left, -_output.x)
 	elif Input.is_action_pressed(action_left):
 		Input.action_release(action_left)
 	# RIGHT
 	if _output.x > 0:
-		print("OUTPUT RIGHT!")
 		Input.action_press(action_right, _output.x)
 	elif Input.is_action_pressed(action_right):
 		Input.action_release(action_right)
 	# UP
 	if _output.y < 0:
-		print("OUTPUT UP!")
 		Input.action_press(action_up, -_output.y)
 	elif Input.is_action_pressed(action_up):
 		Input.action_release(action_up)
 	# DOWN
 	if _output.y > 0:
-		print("OUTPUT DOWN!")
 		Input.action_press(action_down, _output.y)
 	elif Input.is_action_pressed(action_down):
 		Input.action_release(action_down)
