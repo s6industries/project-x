@@ -17,7 +17,7 @@ _global_script_classes=[{
 "base": "Control",
 "class": &"Joystick",
 "language": &"GDScript",
-"path": "res://joystick.gd"
+"path": "res://joystick/joystick.gd"
 }, {
 "base": "Node",
 "class": &"Metabot",
