@@ -10,7 +10,7 @@ extends Control
 @export var pressed_color: Color = Color.GRAY
 
 # If the input is inside this range, the output is zero.
-@export_range(0, 200, 1.0) var deadzone_size: float = 10.0
+@export_range(0, 200, 1.0) var deadzone_size: float = 30.0
 
 # The max distance the tip can reach.
 @export_range(0, 500, 1.0) var clampzone_size: float = 75.0
@@ -84,14 +84,17 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			if _is_point_inside_joystick_area(event.position) and _touch_index == -1:
-				if joystick_mode == JoystickMode.DYNAMIC or (joystick_mode == JoystickMode.FIXED and _is_point_inside_base(event.position)):
-					if joystick_mode == JoystickMode.DYNAMIC:
-						_move_base(event.position)
-					_touch_index = event.index
-					_tip.modulate = pressed_color
-					_update_joystick(event.position)
-					get_viewport().set_input_as_handled()
+			if not _is_point_inside_joystick_area(event.position):
+				return
+			if _touch_index != -1:
+				return
+			if joystick_mode == JoystickMode.DYNAMIC or (joystick_mode == JoystickMode.FIXED and _is_point_inside_base(event.position)):
+				if joystick_mode == JoystickMode.DYNAMIC:
+					_move_base(event.position)
+				_touch_index = event.index
+				_tip.modulate = pressed_color
+				_update_joystick(event.position)
+				get_viewport().set_input_as_handled()
 		elif event.index == _touch_index:
 			_reset()
 			get_viewport().set_input_as_handled()
@@ -107,8 +110,18 @@ func _move_tip(new_position: Vector2) -> void:
 	_tip.global_position = new_position - _tip.pivot_offset * _base.get_global_transform_with_canvas().get_scale()
 
 func _is_point_inside_joystick_area(point: Vector2) -> bool:
-	var x: bool = point.x >= global_position.x and point.x <= global_position.x + (size.x * get_global_transform_with_canvas().get_scale().x)
-	var y: bool = point.y >= global_position.y and point.y <= global_position.y + (size.y * get_global_transform_with_canvas().get_scale().y)
+	var scale = get_global_transform_with_canvas().get_scale()
+	print("JOYSTICK_AREA (", global_position.x, ",", global_position.y,") (",  size.x, ",", size.y, ") (",  scale.x, ",", scale.y, ") (", point.x, ",", point.y, ")")
+	var x_upper_limit = size.x * scale.x + global_position.x
+	var y_upper_limit = size.y * scale.y + global_position.y
+	print("JOYSTICK X LIMITS:", global_position.x, ", ", x_upper_limit)
+	print("JOYSTICK Y LIMITS:", global_position.y, ", ", y_upper_limit)
+	var x: bool = point.x >= global_position.x and point.x <= x_upper_limit
+	var y: bool = point.y >= global_position.y and point.y <= y_upper_limit
+	if x and y:
+		print("JOYSTICK TRUE!!")
+	else:
+		print("JOYSTICK FALSE!!")
 	return x and y
 
 func _is_point_inside_base(point: Vector2) -> bool:
@@ -136,15 +149,18 @@ func _update_joystick(touch_position: Vector2) -> void:
 	if use_input_actions:
 		_update_input_actions()
 
+
 func _update_input_actions():
 	print("OUTPUT:", _output)
 	# LEFT
 	if _output.x < 0:
+		print("OUTPUT LEFT!")
 		Input.action_press(action_left, -_output.x)
 	elif Input.is_action_pressed(action_left):
 		Input.action_release(action_left)
 	# RIGHT
 	if _output.x > 0:
+		print("OUTPUT RIGHT!")
 		Input.action_press(action_right, _output.x)
 	elif Input.is_action_pressed(action_right):
 		Input.action_release(action_right)
@@ -160,6 +176,7 @@ func _update_input_actions():
 		Input.action_press(action_down, _output.y)
 	elif Input.is_action_pressed(action_down):
 		Input.action_release(action_down)
+
 
 func _reset():
 	_pressed = false

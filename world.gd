@@ -17,6 +17,7 @@ var timer: Timer = null
 var can_move: bool = true
 var metabot_simulator
 var potato_stage: int
+var diagonal_moving_toggle: bool = false
 
 const MetabotSimulator = preload("res://metabot_simulator.gd")
 
@@ -103,15 +104,38 @@ func _process(_delta):
 
 
 func get_player_input():
-	if Input.is_action_pressed("ui_left"):
-		return Vector2i.LEFT
-	if Input.is_action_pressed("ui_right"):
-		return Vector2i.RIGHT
-	if Input.is_action_pressed("ui_up"):
-		return Vector2i.UP
-	if Input.is_action_pressed("ui_down"):
-		return Vector2i.DOWN
-	return Vector2i.ZERO
+	var x = round(Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left"))
+	var y = round(Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up"))
+	print("GET_PLAYER_INPUT", x, ",", y, " | ", round(x), ",", round(y))
+	if x == 0 and y == 0:
+		return Vector2i.ZERO
+	# Cardinal directions: LEFT, RIGHT, UP, DOWN
+	if x == 0 or y == 0:
+		return Vector2i(x, y)
+#	if x < 0 and y == 0:
+#		return Vector2i.LEFT
+#	if x > 0 and y == 0:
+#		return Vector2i.RIGHT
+#	if x == 0 and y < 0:
+#		return Vector2i.UP
+#	if x == 0 and y > 0:
+#		return Vector2i.DOWN
+	# Diagonal directions
+	diagonal_moving_toggle = !diagonal_moving_toggle
+	if diagonal_moving_toggle:
+		return Vector2i(x, 0)
+	return Vector2i(0, y)
+#	if round(x) == 0 and round(y) == 0:
+#		return 
+#	if Input.is_action_pressed("ui_left"):
+#		return Vector2i.LEFT
+#	if Input.is_action_pressed("ui_right"):
+#		return Vector2i.RIGHT
+#	if Input.is_action_pressed("ui_up"):
+#		return Vector2i.UP
+#	if Input.is_action_pressed("ui_down"):
+#		return Vector2i.DOWN
+#	return Vector2i.ZERO
 
 
 func idle_state():

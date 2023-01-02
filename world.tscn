@@ -7,11 +7,15 @@
 [node name="World" type="Node2D" node_paths=PackedStringArray("world_label")]
 position = Vector2(84, 31)
 script = ExtResource("1_08pvc")
-world_label = NodePath("Label")
+world_label = NodePath("CanvasLayer/Label")
 
-[node name="Label" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 432.0
+offset_bottom = 336.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_fonts/font = ExtResource("1_1vuol")
 theme_override_font_sizes/font_size = 11
 text = "________________________________________________________________________
@@ -39,8 +43,5 @@ ___#                                                                #___
 ___##################################################################___
 ________________________________________________________________________"
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
 [node name="Joystick" parent="CanvasLayer" instance=ExtResource("4_ipbva")]
-grow_horizontal = 2
-grow_vertical = 2
+joystick_mode = 1
