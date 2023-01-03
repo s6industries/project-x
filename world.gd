@@ -49,7 +49,8 @@ func initiate_simulator():
 	add_child(metabot_simulator)
 	
 func test_agent():
-	var player_agent = Agent.PlayerAgent.new()
+	var agentWorld = AgentWorld.new()
+	var player_agent = Agent.PlayerAgent.new(agentWorld)
 	add_child(player_agent)
 
 # Called when the node enters the scene tree for the first time.

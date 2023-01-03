@@ -21,7 +21,7 @@ var species_instance_id = 0
 var body = []
 
 #	var sensor = mSensor.new()
-var collector = mCollector.new()
+var collector = mCollector.new()                                                                                     
 #	var decomposer = mDecomposer.new()
 #	var storer = mStorer.new()
 var converter = mConverter.new()

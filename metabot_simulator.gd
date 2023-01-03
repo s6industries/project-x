@@ -8,7 +8,7 @@ class_name MetabotSimulator
 
 var timer: Timer = null
 var metabots = []
-var tick_interval = 0.3
+var tick_interval = 1.0
 
 func initiate_timer():
 	timer = Timer.new()

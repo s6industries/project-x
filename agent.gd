@@ -3,7 +3,6 @@ extends Node
 class_name Agent
 
 #const Metabot = preload("res://metabot.gd")
-
 # Sensory data creates: model of environment
 # combined with goals and rules 
 # generates Actions
@@ -27,16 +26,30 @@ class_name Agent
 var metabot:Metabot = null
 var metabots = []
 
+var world: AgentWorld
+
 var model_state = {
-	"body_position": Vector2(0,0)
+	"body_position": Vector2(0,0),
+	"attachments": {
+		"hands":[],
+		"backpack":[],
+		"digestion":[]
+	}
 }
+
+ 
 var motor = null
 var motors = {}
 
 var actuator = null
 var actuators = {}
 
-var senses = []
+# Behaviors are finite state machines 
+# a behavior state executes a sequence of commands or a nested behavior state machine
+var behaviors = []
+var active_behavior = null
+
+var sensors = []
 var inputs = []
 
 var active_command = null
@@ -50,6 +63,10 @@ var is_executing_action = false
 var timer: Timer = null
 var tick_interval = 0.7
 #var tick_interval = 0.3
+
+func _init(_world:AgentWorld):
+	print("new agent in world")
+	world = _world
 
 func initiate_timer():
 	timer = Timer.new()
@@ -108,7 +125,7 @@ func attach_metabot(mbot:Metabot):
 func sense_environment():
 	if is_AI:
 		print("environment")
-		for sense in senses:
+		for sense in sensors:
 			print("sensing")
 
 # https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html
@@ -137,6 +154,7 @@ func create_command(input):
 	# command structure:
 	# [ action, relativeTo, perspective, modifier1, modifier2 ]
 	match input:
+		# movement
 		"move_screen_right":
 			command = ["move","world","topdown","right", 1.0]
 		"move_screen_left":
@@ -144,7 +162,34 @@ func create_command(input):
 		"move_screen_up":
 			command = ["move","world","topdown","up", 1.0]
 		"move_screen_down":
-			command = ["move","world","topdown","down", 1.0]
+			command = ["move","world","topdown","down", 1.0] 
+		# object interactions
+		# put item in inventory
+		"collect_here":
+			command = ["collect","world","local", 1.0]
+		# eat held item = attach source to Metabot collector 
+		# generally results in stored energy for Metabot
+		"eat_here":
+			command = ["eat","equipment","main"]
+		# hold an item from world in body range
+#		"pickup_here":
+#			command = ["pickup","world","topdown","local", 1.0]
+#		# release the currently held item
+#		"drop_here":
+#			command = ["drop","world","topdown","local", 0.0]
+#		# put item from inventory into the main equipment slot
+#		"equip_selected":
+#			command = ["equip","inventory","selected","main"]
+#		# use item in main equipment slot
+#		# using item may consume Metabot's stored energy 
+#		"activate_equip":
+#			command = ["activate","equipment","main"]
+#		# move item from main equipment slot to inventory
+#		"unequip_selected":
+#			command = ["unequip","inventory","selected"]
+		
+		# object => equipment 
+	
 	return command
 
 ## command translated to body part-specific impulse
@@ -158,6 +203,7 @@ func send_impulse(command):
 	var bodypart = null
 	
 	match command[0]:
+#		["move","world","topdown","right", 1.0]
 		"move":
 			# if bipedal
 			bodypart = "legs"
@@ -175,6 +221,11 @@ func send_impulse(command):
 						vector = Vector2.RIGHT
 						
 				impulse = [bodypart, vector, magnitude]
+				
+#		["collect","world","local", 1.0]
+		"collect":
+			impulse = ["hands","grab",Vector2.ZERO]
+			
 	return impulse
 ## impulse translated to mutation of body in environment
 ## "legs, normal speed, vector (0, -1)" => add force to body vector (0, -1)
@@ -188,7 +239,13 @@ func execute_action(impulse):
 			var vector = impulse[1]
 			var magnitude = impulse[2]
 			action = ["translate_body", vector * magnitude ]
-			
+		"hands":
+			var location = impulse[2]
+#			var attach_node = bodypart
+			var attach_node = "backpack"
+			var attach_method = impulse[1]
+			var attach_target = ["any", "seed", "potato"]
+			action = ["attach_body", attach_target, attach_node, attach_method, location]
 	return action
 ## Interact with the world, 
 ## such as simulating physics for moving body, collecting objects/resources
@@ -206,6 +263,9 @@ func affect_environment():
 		"translate_body":
 			model_state["body_position"] += next_action[1]
 			return true
+		"attach_body":
+			var world_location = Vector3(0,0,0)
+			world.grabAtLocation(world_location, next_action[1], next_action[2])
 
 func report_status():
 	print("agent status")
@@ -218,11 +278,12 @@ class PlayerAgent extends Agent:
 #	var timer_input = null
 #	var tick_interval_input = 0.3
 	
-	func _init():
+	func _init(_world:AgentWorld):
+		super._init(_world)
 		print("PlayerAgent")
 		
 	func _ready():
-		print("PlaeyrAgent ready")
+		print("PlayerAgent ready")
 #		initiate_timer_input()
 		super.initiate_timer()
 	
@@ -254,8 +315,13 @@ class PlayerAgent extends Agent:
 			if event.is_action_pressed("ui_right"):
 				input = "move_screen_right"
 			
+			if event.is_action_pressed("agent_collect"):
+				input = "collect_here"
+			if event.is_action_pressed("agent_eat"):
+				input = "eat_here"
+			
 			if input != null:
-				print(input)
+#				print(input)
 				send_input(input)
 			
 #	func initiate_timer_input():
