@@ -49,9 +49,41 @@ func initiate_timer():
 	timer.start(tick_interval)
 
 func tick():
+	print("tick AgentWorld")
+	var actions_in_environment = []
 	for agent in agents:
-		agent.tick()
-		
+		var action_in_environment = agent.tick()
+		actions_in_environment.append([
+			agent.entity.id,
+			action_in_environment
+		])
+	print(actions_in_environment)
+	
+	for action_queued in actions_in_environment:
+		var entity_id = action_queued[0]
+		var entity:Entity = get_entity_by_id(entity_id)
+		var action_info =  action_queued[1]
+		var action_type = action_info[0]
+		if entity:
+			
+			match action_type:
+				"translate_body":
+					var movement_vector = action_info[1]
+					# change entity center point
+					var new_center_point = Vector3(movement_vector.x, movement_vector.y, 0) + entity.center_point
+					
+					if check_world_bounds(new_center_point):
+						# remove entity from coordinate data
+						place_entity(entity, entity.center_point, false)
+						# re-add entity coordinate data at new center point
+						place_entity(entity, new_center_point, true)
+	#					model_state["body_position"] += next_action[1]
+	#					return true
+					else:
+						print("new_center_point out of world bounds")
+#				"attach_body":
+#					var world_location = Vector3(0,0,0)
+#					world.grabAtLocation(world_location, next_action[1], next_action[2])
 		
 func _init(size_3D:Vector3i):
 	print("AgentWorld %d, %d, %d " % [size_3D.x, size_3D.y, size_3D.z])
@@ -63,7 +95,7 @@ func _init(size_3D:Vector3i):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("_ready AgentWorld ")
-	tick_interval = 1.0
+#	tick_interval = 1.0
 #	initiate_timer()
 
 
@@ -72,6 +104,13 @@ func _process(delta):
 	
 	pass
 	
+
+
+func get_entity_by_id(_id:String) -> Entity:
+	var entity:Entity = null
+	if entities_by_id.has(_id):
+		entity = entities_by_id[_id]
+	return entity
 	
 # each entity has a center coordinate + a radius for body size
 # center + radius determines which world coordinates are occupied by the entity's body
@@ -82,10 +121,10 @@ func add_entity(entity:Entity, center_point:Vector3i, id:String = ''):
 	entity.id = id
 	entities_by_id[id] = entity
 	entities.append(entity)
-	place_entity(entity, center_point)
+	place_entity(entity, center_point, true)
 
 
-func place_entity(entity:Entity, center_point:Vector3i):
+func place_entity(entity:Entity, center_point:Vector3i, is_present:bool):
 	print("place_entity %s" % [entity.id])
 	
 	var body_zones = entity.get_body_boundary(center_point)
@@ -95,11 +134,25 @@ func place_entity(entity:Entity, center_point:Vector3i):
 		entity.center_point = center_point
 		for zone in body_zones:
 			print(zone)
-			set_entity_at_coordinate(entity.id, true, zone.x, zone.y, zone.z)
+			set_entity_at_coordinate(entity.id, is_present, zone.x, zone.y, zone.z)
 		return true
 	else:
 	# if entity cannot be placed at this center_point
 		return false
+
+
+
+func check_world_bounds(point:Vector3i):
+	var point_in_bounds = true
+	
+	if point.x < 0 or point.x >= coordinates[0][0].size():
+		return false
+	elif  point.y < 0 or point.y >= coordinates[0].size():
+		return false
+	elif point.z < 0 or point.z >= coordinates.size():
+		return false
+		
+	return point_in_bounds
 
 
 func set_entity_at_coordinate(id:String, is_present:bool, x:int,  y:int, z:int):

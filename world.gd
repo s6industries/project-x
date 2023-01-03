@@ -92,8 +92,12 @@ func initiate_agents():
 	print(agent_world.coordinates)
 
 	# simulate agent tick
-	ai_agent.tick()
-#	player_agent.tick()
+	var t = 2
+	while (t > 0):
+	#	ai_agent.tick()
+	#	player_agent.tick()
+		agent_world.tick()
+		t -= 1
 
 
 # Called when the node enters the scene tree for the first time.

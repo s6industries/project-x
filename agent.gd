@@ -92,6 +92,7 @@ var is_executing_action = false
 func _init(_world:AgentWorld):
 	print("new agent in world")
 	world = _world
+	world.agents.append(self)
 
 
 # Called when the node enters the scene tree for the first time.
@@ -115,7 +116,9 @@ func create_input(goal):
 	
 	var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
 	# clamp delta_vector to compare with input for orthogonal movement
-	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
+#	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
+	delta_vector = delta_vector.clamp( Vector3i(-1, -1, 0), Vector3i(1, 1, 0))
+	print(delta_vector)
 	print("delta vector clamped:")
 	print(delta_vector)
 	
@@ -147,6 +150,7 @@ func create_input(goal):
 ## When it is unconscious/sleeping, time does not tick.
 func tick():
 	print("TICK. Agent")
+	report_status()
 	
 	sense_world()
 	print("goals after sense_world")
@@ -158,8 +162,10 @@ func tick():
 	print("goals after set_goal")
 	print(goals)
 	
+	# an AI behavior is an algorithm that generates inputs based on the agent's active goal and model state
 	# AI agent sends input to achieve active goal
 	if is_AI:
+		# TODO implement AI Behaviors here
 		var active_goal = goals[goals_prioritized[0]]
 		var goal_targets = active_goal[2]
 		if goal_targets.size() > 0:
@@ -191,10 +197,10 @@ func tick():
 			if action != null:
 				actions.append(action)
 		
-	var is_environment_affected = affect_environment()
+#	var is_environment_affected = affect_environment()
+	var action_in_environment = affect_environment()
 	
-	report_status()
-	
+	return action_in_environment
 	
 func set_goal(goal):
 	print("set_goal")
@@ -240,7 +246,8 @@ func get_delta_to_goal(origin, target):
 	print("get_delta_to_goal")
 	print(origin)
 	print(target)
-	delta = Vector3i(origin) - Vector3i(target)
+#	delta = Vector3i(origin) - Vector3i(target)
+	delta = Vector3i(target) - Vector3i(origin) 
 	
 	return delta
 	
@@ -387,20 +394,25 @@ func execute_action(impulse):
 ## translate body by vector (0, -1)
 ## collect tool or potato
 func affect_environment():
-	print("environment")
+	print("affect_environment")
 	
 	if actions.size() == 0:
 		return false
-
+	
+	# the agent's actions that affect the world / environment
+	# are queued for simultaneous processing in the universal physics simulation
+	# TODO how to implement a fair tiebreaker when multiple agents share a goal target?
 	var next_action = actions.pop_front()
 	
-	match next_action[0]:
-		"translate_body":
-			model_state["body_position"] += next_action[1]
-			return true
-		"attach_body":
-			var world_location = Vector3(0,0,0)
-			world.grabAtLocation(world_location, next_action[1], next_action[2])
+	return next_action
+	
+#	match next_action[0]:
+#		"translate_body":
+#			model_state["body_position"] += next_action[1]
+#			return true
+#		"attach_body":
+#			var world_location = Vector3(0,0,0)
+#			world.grabAtLocation(world_location, next_action[1], next_action[2])
 
 func report_status():
 	print("agent status")
