@@ -91,8 +91,8 @@ func initiate_agents():
 	
 	print(agent_world.coordinates)
 
-	# simulate agent tick
-	var t = 2
+	# simulate agent ticks
+	var t = 3
 	while (t > 0):
 	#	ai_agent.tick()
 	#	player_agent.tick()

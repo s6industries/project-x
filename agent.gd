@@ -114,26 +114,34 @@ func create_input(goal):
 	var goal_type = goal[0]
 	var goal_target = goal[2][0]
 	
-	var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
-	# clamp delta_vector to compare with input for orthogonal movement
-#	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
-	delta_vector = delta_vector.clamp( Vector3i(-1, -1, 0), Vector3i(1, 1, 0))
-	print(delta_vector)
-	print("delta vector clamped:")
-	print(delta_vector)
-	
-	if delta_vector.y == 1:
-#	if event.is_action_pressed("ui_down"):
-		input = "move_screen_down"
-	elif delta_vector.y == -1:
-#	if event.is_action_pressed("ui_up"):
-		input = "move_screen_up"
-	elif delta_vector.x == -1:
-#	if event.is_action_pressed("ui_left"):
-		input = "move_screen_left"
-	elif delta_vector.x == 1:
-#	if event.is_action_pressed("ui_right"):
-		input = "move_screen_right"
+	match goal_type:
+		"collect":
+			var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
+			
+			if delta_vector.length() >= 1:
+				print("agent move entity towards goal")
+				# clamp delta_vector to compare with input for orthogonal movement
+			#	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
+				delta_vector = delta_vector.clamp( Vector3i(-1, -1, 0), Vector3i(1, 1, 0))
+				print(delta_vector)
+				print("delta vector clamped:")
+				print(delta_vector)
+				
+				if delta_vector.y == 1:
+			#	if event.is_action_pressed("ui_down"):
+					input = "move_screen_down"
+				elif delta_vector.y == -1:
+			#	if event.is_action_pressed("ui_up"):
+					input = "move_screen_up"
+				elif delta_vector.x == -1:
+			#	if event.is_action_pressed("ui_left"):
+					input = "move_screen_left"
+				elif delta_vector.x == 1:
+			#	if event.is_action_pressed("ui_right"):
+					input = "move_screen_right"
+			else:
+				print("entity is at goal")
+				input = "collect_here"
 		
 	if input != null:
 		send_input(input)
@@ -201,7 +209,8 @@ func tick():
 	var action_in_environment = affect_environment()
 	
 	return action_in_environment
-	
+
+
 func set_goal(goal):
 	print("set_goal")
 	print(goal)
@@ -241,6 +250,7 @@ func set_goal(goal):
 	
 	return goal
 
+
 func get_delta_to_goal(origin, target):
 	var delta:Vector3i = Vector3i.ZERO
 	print("get_delta_to_goal")
@@ -250,8 +260,8 @@ func get_delta_to_goal(origin, target):
 	delta = Vector3i(target) - Vector3i(origin) 
 	
 	return delta
-	
-	
+
+
 func attach_metabot(mbot:Metabot):
 	metabot = mbot
 
@@ -282,7 +292,8 @@ func process_input():
 	var input = inputs.pop_front()
 			
 	return input
-	
+
+
 ## Input translated to body-specific command
 ## for a bipedal "move down" => "walk down
 ## for a flier, "move down" => "fly down"
@@ -334,6 +345,7 @@ func create_command(input):
 	
 	return command
 
+
 ## command translated to body part-specific impulse
 ## "walk down" => "legs, normal speed, vector (0, -1)"
 func send_impulse(command):
@@ -369,6 +381,8 @@ func send_impulse(command):
 			impulse = ["hands","grab",Vector2.ZERO]
 			
 	return impulse
+
+
 ## impulse translated to mutation of body in environment
 ## "legs, normal speed, vector (0, -1)" => add force to body vector (0, -1)
 func execute_action(impulse):
@@ -389,6 +403,8 @@ func execute_action(impulse):
 			var attach_target = ["any", "seed", "potato"]
 			action = ["attach_body", attach_target, attach_node, attach_method, location]
 	return action
+
+
 ## Interact with the world, 
 ## such as simulating physics for moving body, collecting objects/resources
 ## translate body by vector (0, -1)
@@ -413,6 +429,15 @@ func affect_environment():
 #		"attach_body":
 #			var world_location = Vector3(0,0,0)
 #			world.grabAtLocation(world_location, next_action[1], next_action[2])
+
+
+func attach_entity(entity, attach_node):
+	print("attach_entity %s to %s" % [entity, attach_node])
+	if model_state["attachments"].has(attach_node):
+		model_state["attachments"][attach_node].append(entity)
+	else:
+		print("entity has no attach node '%s'" % [attach_node])
+
 
 func report_status():
 	print("agent status")

@@ -81,9 +81,19 @@ func tick():
 	#					return true
 					else:
 						print("new_center_point out of world bounds")
-#				"attach_body":
-#					var world_location = Vector3(0,0,0)
-#					world.grabAtLocation(world_location, next_action[1], next_action[2])
+				# ["attach_body", ["any", "seed", "potato"], "backpack", "grab", (0, 0)] 
+				"attach_body":
+					var attach_target_location = action_info[4]
+					var grab_target_types = action_info[1]
+					var entity_attach_node = action_info[2]
+					var world_location = Vector3i(entity.center_point) + Vector3i()
+					var grabbed = grab_at_location(world_location, grab_target_types, entity_attach_node)
+					if grabbed:
+						print("grabbed %s" % [grabbed])
+						grabbed = get_entity_by_id(grabbed)
+						place_entity(grabbed, world_location, false)
+						entity.agent.attach_entity(grabbed, entity_attach_node)
+						print(entity.agent.model_state)
 		
 func _init(size_3D:Vector3i):
 	print("AgentWorld %d, %d, %d " % [size_3D.x, size_3D.y, size_3D.z])
@@ -141,7 +151,6 @@ func place_entity(entity:Entity, center_point:Vector3i, is_present:bool):
 		return false
 
 
-
 func check_world_bounds(point:Vector3i):
 	var point_in_bounds = true
 	
@@ -166,11 +175,29 @@ func set_entity_at_coordinate(id:String, is_present:bool, x:int,  y:int, z:int):
 			coordinate_data.erase(id)
 
 
-func grab_at_location(location:Vector3, grab_target, grabber):
+func get_entities_of_type(entity_types, world_point:Vector3i):
+	var coordinate_data:Array = coordinates[world_point.z][world_point.y][world_point.x]
+	var entities_found = {}
+	for id in coordinate_data:
+		var entity:Entity = get_entity_by_id(id)
+		# check if any of the target types match the entities' types at this world point
+		for type in entity_types:
+			if entity.placement.has(type):
+				if !entities_found.has(type):
+					entities_found[type] = []
+				entities_found[type].append(id)
+	return entities_found
+
+
+func grab_at_location(location:Vector3, grab_targets, grabber):
 	var grabbed = null
 	# check if there is an entity at location
 	# is entity type of grab_target
 	# if grab_target can be grabbed by grabber
+	var found_entities = get_entities_of_type(grab_targets, location)
+	if found_entities["seed"]:
+		grabbed = found_entities["seed"][0]
+		
 	return grabbed
 
 
