@@ -26,6 +26,9 @@ class_name Agent
 var metabot:Metabot = null
 var metabots = []
 
+var entity:AgentWorld.Entity
+var entities = []
+
 var world: AgentWorld
 
 var model_state = {
@@ -49,7 +52,21 @@ var actuators = {}
 var behaviors = []
 var active_behavior = null
 
-var sensors = []
+var goals = []
+var goals_prioritized = []
+
+#var sensors = []
+var sensors = [
+	{
+		"type":"vision",
+		"range": 3,
+		"mods": [
+			"day",
+			"night"
+		],
+	}
+]
+
 var inputs = []
 
 var active_command = null
@@ -60,26 +77,42 @@ var actions = []
 var is_AI = false
 var is_executing_action = false
 
-var timer: Timer = null
-var tick_interval = 0.7
+#var timer: Timer = null
+#var tick_interval = 0.7
 #var tick_interval = 0.3
 
 func _init(_world:AgentWorld):
 	print("new agent in world")
 	world = _world
 
-func initiate_timer():
-	timer = Timer.new()
-	timer.set_one_shot(false)
-	timer.connect("timeout", self.tick)
-	add_child(timer)
-	# autostart
-	timer.start(tick_interval)
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+#	pass # Replace with function body.
+	print("Agent ready")
+#	initiate_timer()
+	
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+	
+
+#func initiate_timer():
+#	timer = Timer.new()
+#	timer.set_one_shot(false)
+#	timer.connect("timeout", self.tick)
+#	add_child(timer)
+#	# autostart
+#	timer.start(tick_interval)
 	
 ## Time ticks for the Agent when it is conscious.
 ## When it is unconscious/sleeping, time does not tick.
 func tick():
 	print("TICK. Agent")
+	
+	sense_world()
+	
 #	for mbot in metabots:
 #		mbot.tick()
 	var input = process_input()
@@ -107,26 +140,24 @@ func tick():
 	var is_environment_affected = affect_environment()
 	
 	report_status()
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-#	pass # Replace with function body.
-	print("Agent ready")
-	initiate_timer()
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
 	
 func attach_metabot(mbot:Metabot):
 	metabot = mbot
 
+
 ## primarily for AI agent, as player agent senses environment from their own eyes and ears
-func sense_environment():
-	if is_AI:
-		print("environment")
-		for sense in sensors:
-			print("sensing")
+func sense_world():
+	print("sense_world")
+	world.get_sensor_data_for_entity(entity.id)
+
+
+#func sense_environment():
+#	if is_AI:
+#		print("environment")
+#		for sense in sensors:
+#			print("sensing")
+
 
 # https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html
 # TODO handle platform specific input before this (ex. gamepad vs touch vs keyboard)
@@ -271,7 +302,24 @@ func report_status():
 	print("agent status")
 	print("body position: [%f. %f]" % [model_state["body_position"].x, model_state["body_position"].y])
 
+
 # inner classes
+
+
+class AIAgent extends Agent:
+
+	
+	func _init(_world:AgentWorld):
+		is_AI = true
+		super._init(_world)
+		print("_init AIAgent")
+		
+		
+	func _ready():
+#		initiate_timer_input()
+		super._ready()
+		print("_ready AIAgent")
+
 
 class PlayerAgent extends Agent:
 	
@@ -285,8 +333,9 @@ class PlayerAgent extends Agent:
 	func _ready():
 		print("PlayerAgent ready")
 #		initiate_timer_input()
-		super.initiate_timer()
-	
+		super._ready()
+		
+	#https://docs.godotengine.org/en/stable/classes/class_input.html
 	func _input(event):
 #		print(event.as_text())
 		
@@ -335,4 +384,5 @@ class PlayerAgent extends Agent:
 #	func tick_input():
 #		print("tick_input")
 
-#https://docs.godotengine.org/en/stable/classes/class_input.html
+
+

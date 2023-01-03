@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d5vpwqubc7qr"]
+[gd_scene load_steps=4 format=3 uid="uid://d5vpwqubc7qr"]
 
 [ext_resource type="FontFile" uid="uid://c2djudtcsv28h" path="res://8x8-pixel.ttf" id="1_1vuol"]
 [ext_resource type="Script" path="res://world.gd" id="1_08pvc"]
 [ext_resource type="Script" path="res://player.gd" id="3_ikj8o"]
-[ext_resource type="PackedScene" uid="uid://do43hdhe7uhja" path="res://joystick.tscn" id="4_ipbva"]
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("world_label")]
 position = Vector2(84, 31)
@@ -42,7 +41,3 @@ ________________________________________________________________________"
 
 [node name="Player" type="Node2D" parent="."]
 script = ExtResource("3_ikj8o")
-
-[node name="Joystick" parent="." instance=ExtResource("4_ipbva")]
-offset = Vector2(100, 800)
-transform = Transform2D(1, 0, 0, 1, 100, 800)

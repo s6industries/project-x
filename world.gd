@@ -48,16 +48,6 @@ func initiate_simulator():
 	metabot_simulator = MetabotSimulator.new()
 	add_child(metabot_simulator)
 	
-func test_agent():
-	var agentWorld = AgentWorld.new()
-	var player_agent = Agent.PlayerAgent.new(agentWorld)
-	add_child(player_agent)
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	
-	initiate_simulator()
-	
 	# metabots plant potat AT
 	metabots[id] = [0, Vector2i(20, 10)]
 	var potato = metabot_simulator.plant_potato(id)
@@ -72,16 +62,46 @@ func _ready():
 	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
 	id += 1
 	
-#	test_agent()
 	
-	load_world()
-	initiate_timer()
+func initiate_agents():
+	var agent_world = AgentWorld.new(Vector3i(3, 4, 1))
 	
-	var test_class = TestClass.new()
-	test_class.hello_world()
+	var e_seed = AgentWorld.Entity.new()
+	var e_seed_location = Vector3i(1, 2, 0)
+	
+	var e_android = AgentWorld.Entity.new()
+	var e_android_location = Vector3i(2, 3, 0)
+	
+	agent_world.add_entity(e_seed, e_seed_location)
+	agent_world.add_entity(e_android, e_android_location, 'a1')
+	print(agent_world.coordinates)
+	
+#	var player_agent = Agent.PlayerAgent.new(agent_world)
+#	player_agent.entity = e_android
+#	add_child(player_agent)
+	
+	var ai_agent = Agent.AIAgent.new(agent_world)
+	# agent and entity instances are mutually registered
+	ai_agent.entity = e_android
+	e_android.agent = ai_agent
+	add_child(ai_agent)
+
+# simulate agent tick
+	ai_agent.tick()
 
 
-
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	
+	initiate_agents()
+	
+#	initiate_simulator()
+	
+#	load_world()
+#	initiate_timer()
+	
+#	var test_class = TestClass.new()
+#	test_class.hello_world()
 
 
 func potato_life_stage_progressed(id, stage):
