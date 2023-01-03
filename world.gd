@@ -68,26 +68,32 @@ func initiate_agents():
 	
 	var e_seed = AgentWorld.Entity.new()
 	var e_seed_location = Vector3i(1, 2, 0)
+	agent_world.add_entity(e_seed, e_seed_location)
 	
+	# setup player android
+#	var e_android_player = AgentWorld.Entity.new()
+#	var e_android_player_location = Vector3i(1, 3, 0)
+#	agent_world.add_entity(e_android_player, e_android_player_location, 'android_player')
+#	var player_agent = Agent.PlayerAgent.new(agent_world)
+#	player_agent.entity = e_android_player
+#	e_android_player.agent = player_agent
+#	add_child(player_agent)
+
+	# setup AI android
 	var e_android = AgentWorld.Entity.new()
 	var e_android_location = Vector3i(2, 3, 0)
-	
-	agent_world.add_entity(e_seed, e_seed_location)
-	agent_world.add_entity(e_android, e_android_location, 'a1')
-	print(agent_world.coordinates)
-	
-#	var player_agent = Agent.PlayerAgent.new(agent_world)
-#	player_agent.entity = e_android
-#	add_child(player_agent)
-	
+	agent_world.add_entity(e_android, e_android_location, 'android_AI')
 	var ai_agent = Agent.AIAgent.new(agent_world)
 	# agent and entity instances are mutually registered
 	ai_agent.entity = e_android
 	e_android.agent = ai_agent
 	add_child(ai_agent)
+	
+	print(agent_world.coordinates)
 
-# simulate agent tick
+	# simulate agent tick
 	ai_agent.tick()
+#	player_agent.tick()
 
 
 # Called when the node enters the scene tree for the first time.

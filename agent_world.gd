@@ -75,7 +75,10 @@ func _process(delta):
 	
 # each entity has a center coordinate + a radius for body size
 # center + radius determines which world coordinates are occupied by the entity's body
-func add_entity(entity:Entity, center_point:Vector3i, id:String = uuid_util.v4()):	
+func add_entity(entity:Entity, center_point:Vector3i, id:String = ''):
+	if id == '':
+		id = uuid_util.v4()
+		
 	entity.id = id
 	entities_by_id[id] = entity
 	entities.append(entity)
@@ -119,12 +122,14 @@ func grab_at_location(location:Vector3, grab_target, grabber):
 
 
 func get_sensor_data_for_entity(_id:String):
+	var sensor_data = {}
 	if entities_by_id.has(_id):
 		var entity:Entity = entities_by_id[_id]
 		
-		get_sensor_data(entity.agent.sensors, entity.center_point)
+		sensor_data = get_sensor_data(entity.agent.sensors, entity.center_point, [_id])
 	else:
 		print("no entity registered with id %s" % [_id])
+	return sensor_data
 # ex. senses of an agent
 #var senses = [
 #	{
@@ -138,7 +143,8 @@ func get_sensor_data_for_entity(_id:String):
 # get all world zones within sensor range
 # scan each zone for entities detectable by sensor
 # return all detected entities
-func get_sensor_data(sensors:Array, origin:Vector3):
+func get_sensor_data(sensors:Array, origin:Vector3, ignored_entities = []):
+	var sensor_data = {}
 	print("get_sensor_data")
 	print(sensors)
 	print(origin)
@@ -150,9 +156,9 @@ func get_sensor_data(sensors:Array, origin:Vector3):
 		match sensor.type:
 			"vision":
 				print("vision")
-				get_detectable_entities(sensor, origin)
+		sensor_data[sensor.type] = get_detectable_entities(sensor, origin, ignored_entities)
 				
-
+	return sensor_data
 #{
 #	"type":"vision",
 #	"range": 3,
@@ -165,7 +171,8 @@ func get_sensor_data(sensors:Array, origin:Vector3):
 # for sound, smell, or temperature sensors, the presence of an entity is detectable within a certain world zone 
 # that contains the data signature & intensity from the entity source 
 # ex. does the world zone contain: smellable particles, heat radiation, soundwaves
-func get_detectable_entities(sensor, origin:Vector3):
+func get_detectable_entities(sensor, origin:Vector3, ignored_entities = []):
+	var data_for_sensor = []
 	print("get_detectable_entities")
 	var delta_x = sensor.range
 	var delta_y = sensor.range
@@ -181,7 +188,9 @@ func get_detectable_entities(sensor, origin:Vector3):
 	print(range_y)
 	print(range_z)
 	# from origin set scan range across all coordinate dimensions
-	scan_coordinates_for_entities(range_x, range_y, range_z, sensor.type, sensor.mods)
+	var d = scan_coordinates_for_entities(range_x, range_y, range_z, sensor.type, sensor.mods, ignored_entities)
+	data_for_sensor.append_array(d)
+	return data_for_sensor
 
 
 func get_range(origin, delta, min, max):
@@ -190,7 +199,7 @@ func get_range(origin, delta, min, max):
 	return [maxi(min, origin - delta), mini(max, origin + delta) ]
 
 
-func scan_coordinates_for_entities(range_x, range_y, range_z, sensor_type, sensor_mods):
+func scan_coordinates_for_entities(range_x, range_y, range_z, sensor_type, sensor_mods, ignored_entities = []):
 	print("scan_coordinates_for_entities")
 	var all_sensor_data = []
 	
@@ -208,7 +217,7 @@ func scan_coordinates_for_entities(range_x, range_y, range_z, sensor_type, senso
 			while x <= end_x:
 #				var c_x = []
 #				c_y.append(c_x)
-				var sensor_data_at_coordinate = check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z)
+				var sensor_data_at_coordinate = check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z, ignored_entities)
 				if sensor_data_at_coordinate.size() > 0:
 					all_sensor_data.append({
 						"loc": Vector3i(x, y, z),
@@ -222,16 +231,24 @@ func scan_coordinates_for_entities(range_x, range_y, range_z, sensor_type, senso
 		y = 0
 		z += 1
 	
-	print("all_sensor_data:")
+	print("all_sensor_data for %s:" % [sensor_type])
 	print(all_sensor_data)
+	return all_sensor_data
 
 
-func check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z):
+func check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z, ignored_entities = []):
 	var sensor_data = []
 	var coordinate_data = coordinates[z][y][x]
 	print("checking coordinate %d, %d, %d" % [x, y, z])
 	print(coordinate_data)
-	sensor_data.append_array(coordinate_data)
+#	sensor_data.append_array(coordinate_data)
+	for entity_id in coordinate_data:
+		if entities_by_id.has(entity_id) and entity_id not in ignored_entities:
+			var entity:Entity = entities_by_id[entity_id]
+			if entity.detectable.has(sensor_type):
+				print("entity ID %s sensed by %s" % [entity_id, sensor_type])
+				sensor_data.append_array(entity.placement)
+	
 	return sensor_data
 
 
@@ -244,7 +261,8 @@ class Entity:
 	
 	# world layers which this entity has.
 	var placement = [
-		"seed", "potato",
+		"seed", 
+#		"potato",
 		"grounded",
 	]
 	# world layers which entities of type can share a world zone.

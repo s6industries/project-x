@@ -37,7 +37,8 @@ var model_state = {
 		"hands":[],
 		"backpack":[],
 		"digestion":[]
-	}
+	},
+	"sensor_data": []
 }
 
  
@@ -52,8 +53,15 @@ var actuators = {}
 var behaviors = []
 var active_behavior = null
 
-var goals = []
-var goals_prioritized = []
+# goal [ goal_type, [goal_modifiers], [goal_targets] ]
+var goals = [
+	["survive", [], []],
+	["explore", [], []],
+	["collect", ["seed"], []]
+]
+var goals_prioritized = [
+	2, 1, 0
+]
 
 #var sensors = []
 var sensors = [
@@ -96,7 +104,36 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+
+func create_input(goal):
+	print("create_input")
+	var input = null
 	
+	var goal_type = goal[0]
+	var goal_target = goal[2][0]
+	
+	var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
+	# clamp delta_vector to compare with input for orthogonal movement
+	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
+	print("delta vector clamped:")
+	print(delta_vector)
+	
+	if delta_vector.y == 1:
+#	if event.is_action_pressed("ui_down"):
+		input = "move_screen_down"
+	elif delta_vector.y == -1:
+#	if event.is_action_pressed("ui_up"):
+		input = "move_screen_up"
+	elif delta_vector.x == -1:
+#	if event.is_action_pressed("ui_left"):
+		input = "move_screen_left"
+	elif delta_vector.x == 1:
+#	if event.is_action_pressed("ui_right"):
+		input = "move_screen_right"
+		
+	if input != null:
+		send_input(input)
 
 #func initiate_timer():
 #	timer = Timer.new()
@@ -112,7 +149,24 @@ func tick():
 	print("TICK. Agent")
 	
 	sense_world()
+	print("goals after sense_world")
+	print(goals)
 	
+	# TODO automatically prioritize goals
+	
+	goals[goals_prioritized[0]] = set_goal(goals[goals_prioritized[0]])
+	print("goals after set_goal")
+	print(goals)
+	
+	# AI agent sends input to achieve active goal
+	if is_AI:
+		var active_goal = goals[goals_prioritized[0]]
+		var goal_targets = active_goal[2]
+		if goal_targets.size() > 0:
+			print("sending AI input for goal %s" % [active_goal[0]])
+			print(active_goal)
+			create_input(active_goal)
+		
 #	for mbot in metabots:
 #		mbot.tick()
 	var input = process_input()
@@ -142,6 +196,55 @@ func tick():
 	report_status()
 	
 	
+func set_goal(goal):
+	print("set_goal")
+	print(goal)
+	
+	var goal_type = goal[0]
+	var goal_mods = goal[1]
+	var goal_targets = goal[2]
+	print(goal_type)
+	print(goal_mods)
+	print(goal_targets)
+	
+	match goal_type:
+		"collect":
+			
+			var target = goal_mods[0]
+			var sensor_type_data = "vision"
+			var zones_with_entities = model_state["sensor_data"][sensor_type_data]
+			for zone in zones_with_entities:
+				if target in zone["data"]:
+					var location = zone["loc"]
+					if location not in goal_targets:
+						goal_targets.append(location)
+			
+	if goal_targets.size() > 0:
+		print("goal '%s' has possible targets: %d" % [goal_type, goal_targets.size()])
+		print(goal_targets)
+		goal[2] = goal_targets
+		
+		# TODO weight and prioritize targets for goal
+		for target in goal_targets:
+			var delta_to_goal = get_delta_to_goal(entity.center_point, target)
+			print(delta_to_goal)
+			var distance_to_goal = delta_to_goal.length()
+			print(distance_to_goal)
+	else:
+		print("no targets found for goal %s" % [goal_type])
+	
+	return goal
+
+func get_delta_to_goal(origin, target):
+	var delta:Vector3i = Vector3i.ZERO
+	print("get_delta_to_goal")
+	print(origin)
+	print(target)
+	delta = Vector3i(origin) - Vector3i(target)
+	
+	return delta
+	
+	
 func attach_metabot(mbot:Metabot):
 	metabot = mbot
 
@@ -149,9 +252,10 @@ func attach_metabot(mbot:Metabot):
 ## primarily for AI agent, as player agent senses environment from their own eyes and ears
 func sense_world():
 	print("sense_world")
-	world.get_sensor_data_for_entity(entity.id)
-
-
+	var sensor_data_frame = world.get_sensor_data_for_entity(entity.id)
+	model_state["sensor_data"] = sensor_data_frame
+	print("model_state for agent %s" % [entity.id])
+	print(model_state)
 #func sense_environment():
 #	if is_AI:
 #		print("environment")
