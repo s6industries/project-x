@@ -48,6 +48,7 @@ func initiate_timer():
 	# autostart
 	timer.start(tick_interval)
 
+
 func tick():
 	print("tick AgentWorld")
 	var actions_in_environment = []
@@ -166,8 +167,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
-	pass
-	
+	pass	
 
 
 func get_entity_by_id(_id:String) -> Entity:
@@ -386,12 +386,24 @@ func check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z, ignored_ent
 	return sensor_data
 
 
+# a thing that occupies dimensional space. Entities can collide/intersect with, attach/detach to, and be created/destroyed by other entities
+# an entity can contain a metabolism (an acive or dormant metabot)
+# an entity can have a body that moves in dimensional space
+# an entity body that moves in physical space has a metabolism that provides the energy for movement
+# an entity body is controlled by an agent which manages goals, uses local environment data gathered via sensors
+# to determine actions to achieve the active goal. 
+# an agent creates input > command > impulse > action through its body to manipulate entities and complete its goals
+# a metabolism is the power supply for an agent and its body entity
 class Entity:
 	
 	var id:String
 	var center_point: Vector3
 	var radius:float
 	var agent:Agent
+	var metabot:Metabot = null
+	var metabot_species:String
+	
+	var pools = [] # resource pools that are available to attached metabots
 	
 	# world layers which this entity has.
 	var placement = [

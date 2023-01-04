@@ -15,10 +15,13 @@ var metabots: Dictionary # id : [stage, position]
 var state: State = State.IDLE
 var timer: Timer = null
 var can_move: bool = true
-var metabot_simulator
+
 var potato_stage: int
 
-const MetabotSimulator = preload("res://metabot_simulator.gd")
+#const MetabotSimulator = preload("res://metabot_simulator.gd")
+var agent_world:AgentWorld
+var metabot_simulator:MetabotSimulator
+
 
 func load_world():
 	var file_path = "res://world.txt"
@@ -44,10 +47,12 @@ func initiate_timer():
 	add_child(timer)
 
 
-func initiate_simulator():
+func initiate_metabots():
 	metabot_simulator = MetabotSimulator.new()
 	add_child(metabot_simulator)
-	
+
+
+func test_metabots():
 	# metabots plant potat AT
 	metabots[id] = [0, Vector2i(20, 10)]
 	var potato = metabot_simulator.plant_potato(id)
@@ -64,8 +69,25 @@ func initiate_simulator():
 	
 	
 func initiate_agents():
-	var agent_world = AgentWorld.new(Vector3i(3, 4, 1))
 	
+	# TODO setup scenarios from data file (SQLite?)
+	agent_world = AgentWorld.new(Vector3i(3, 4, 1))
+
+
+func on_new_soil(_self:AgentWorld.Entity):
+	pass
+	print("on_new_soil")
+	print(_self)
+	
+	var pool_water = Metabot.Pool.new("water", 0)
+	pool_water.add(100)
+	var pool_minerals = Metabot.Pool.new("minerals", 0)
+	pool_minerals.add(100)
+	
+	_self.pools.append_array([ pool_water, pool_minerals ])
+
+
+func test_agents():	
 	var placement:Array
 	var shareable_placement:Array
 	var nonshareable_placement:Array
@@ -88,6 +110,7 @@ func initiate_agents():
 		"vision"
 	]
 	
+	# TODO implement seed source (as spaceship / headquarters?)
 	var e_seed_locations = [
 		Vector3i(1, 2, 0),
 	]
@@ -112,6 +135,11 @@ func initiate_agents():
 	detectable = [
 		"vision"
 	]
+	
+	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
+	# soil becomes a passthrough entity for plant metabots attached to it
+	# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
+	
 	
 	var e_soil_locations = [
 		Vector3i(1, 1, 0),
@@ -165,8 +193,6 @@ func initiate_agents():
 	while (t > 0):
 		tick_count += 1
 		print(">>>>>>>>> simulate agent_world.tick(): tick %d >>>>>>>>> " % [tick_count])
-	#	ai_agent.tick()
-	#	player_agent.tick()
 		agent_world.tick()
 		t -= 1
 
@@ -175,8 +201,10 @@ func initiate_agents():
 func _ready():
 	
 	initiate_agents()
+#	initiate_metabots()
 	
-#	initiate_simulator()
+	test_agents()
+#	test_metabots()
 	
 #	load_world()
 #	initiate_timer()
@@ -189,7 +217,6 @@ func potato_life_stage_progressed(id, stage):
 	print("potato_life_stage_progressed: ", id, stage)
 	potato_stage = stage
 	metabots[id][0] = stage
-
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

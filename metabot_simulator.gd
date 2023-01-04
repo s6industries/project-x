@@ -37,13 +37,24 @@ func plant_potato(id: int):
 	pool_minerals.add(100)
 
 	var potato = Potato.new(id)
+	potato.func_activate = Callable(self, "activate_potato")
 
 	potato.collector.add_source(pool_water)
 	potato.collector.add_source(pool_minerals)
 
 	metabots.append(potato)
 	return potato
+
+
+func activate_potato(_self:Potato, environment):
+	pass
+	# check if collector has enough minerals and water to start metabolism
+	if _self.collector.get_source_amount("water") >= 20 && _self.collector.get_source_amount("minerals") >= 20:
+		return true
 	
+	return false
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
