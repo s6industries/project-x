@@ -57,11 +57,13 @@ var active_behavior = null
 var goals = [
 	["survive", [], []],
 	["explore", [], []],
-	["collect", ["seed"], []]
+	["collect", ["seed", 1], []],
+	["plant", ["seed", 1], []],
 ]
 var goals_prioritized = [
-	2, 1, 0
+	2, 3, 1, 0
 ]
+var active_goal = null
 
 #var sensors = []
 var sensors = [
@@ -115,36 +117,84 @@ func create_input(goal):
 	var goal_target = goal[2][0]
 	
 	match goal_type:
+		
+		# ex. ["collect", ["seed"], [(1, 2, 0)]]
 		"collect":
 			var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
 			
 			if delta_vector.length() >= 1:
-				print("agent move entity towards goal")
-				# clamp delta_vector to compare with input for orthogonal movement
-			#	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
-				delta_vector = delta_vector.clamp( Vector3i(-1, -1, 0), Vector3i(1, 1, 0))
-				print(delta_vector)
-				print("delta vector clamped:")
-				print(delta_vector)
-				
-				if delta_vector.y == 1:
-			#	if event.is_action_pressed("ui_down"):
-					input = "move_screen_down"
-				elif delta_vector.y == -1:
-			#	if event.is_action_pressed("ui_up"):
-					input = "move_screen_up"
-				elif delta_vector.x == -1:
-			#	if event.is_action_pressed("ui_left"):
-					input = "move_screen_left"
-				elif delta_vector.x == 1:
-			#	if event.is_action_pressed("ui_right"):
-					input = "move_screen_right"
+				input = create_input_move_to_goal(delta_vector)
 			else:
-				print("entity is at goal")
 				input = "collect_here"
+				print("entity is at goal. %s" % [input])
+				
+		# ex. ["plant", ["seed"], [(1, 2, 0)]]
+		"plant":
+			var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
+			
+			if delta_vector.length() >= 1:
+				input = create_input_move_to_goal(delta_vector)
+			else:
+				input = "collect_here"
+				print("entity is at goal. %s" % [input])
 		
 	if input != null:
 		send_input(input)
+
+
+func create_input_move_to_goal(delta_vector:Vector3i):
+	var input = null
+	
+	print("agent move entity towards goal")
+	# clamp delta_vector to compare with input for orthogonal movement
+#	delta_vector = delta_vector.clamp(Vector3i.ZERO, Vector3i(1, 1, 0))
+	delta_vector = delta_vector.clamp( Vector3i(-1, -1, 0), Vector3i(1, 1, 0))
+	print(delta_vector)
+	print("delta vector clamped:")
+	print(delta_vector)
+	
+	if delta_vector.y == 1:
+#	if event.is_action_pressed("ui_down"):
+		input = "move_screen_down"
+	elif delta_vector.y == -1:
+#	if event.is_action_pressed("ui_up"):
+		input = "move_screen_up"
+	elif delta_vector.x == -1:
+#	if event.is_action_pressed("ui_left"):
+		input = "move_screen_left"
+	elif delta_vector.x == 1:
+#	if event.is_action_pressed("ui_right"):
+		input = "move_screen_right"
+	
+	return input
+
+
+func check_goal_completed(goal):
+	print("check_goal_completed")
+	print(goal)
+	var is_goal_completed = false
+	
+	var goal_type = goal[0]
+	match goal_type:
+		
+		# ex. ["collect", ["seed", 1], []],
+		"collect":
+			var target_type = ''
+			var current_amount = 0			
+			var goal_amount = 0
+			print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
+			is_goal_completed = current_amount >= goal_amount
+			
+		# ex. ["plant", ["seed", 1], []],
+		"plant":
+			var target_type = ''
+			var current_amount = 0			
+			var goal_amount = 0
+			print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
+			is_goal_completed = current_amount >= goal_amount			
+	
+	return is_goal_completed
+
 
 #func initiate_timer():
 #	timer = Timer.new()
@@ -153,12 +203,21 @@ func create_input(goal):
 #	add_child(timer)
 #	# autostart
 #	timer.start(tick_interval)
-	
+
+
 ## Time ticks for the Agent when it is conscious.
 ## When it is unconscious/sleeping, time does not tick.
 func tick():
 	print("TICK. Agent")
 	report_status()
+	
+	active_goal = goals[goals_prioritized[0]]
+	if check_goal_completed(active_goal):
+		print("!!! goal completed !!!")
+		print(active_goal)
+		# TODO: how to handle completed goals?
+		# continue to next prioritized goal
+		goals_prioritized.pop_front()
 	
 	sense_world()
 	print("goals after sense_world")
@@ -174,7 +233,7 @@ func tick():
 	# AI agent sends input to achieve active goal
 	if is_AI:
 		# TODO implement AI Behaviors here
-		var active_goal = goals[goals_prioritized[0]]
+		active_goal = goals[goals_prioritized[0]]
 		var goal_targets = active_goal[2]
 		if goal_targets.size() > 0:
 			print("sending AI input for goal %s" % [active_goal[0]])
@@ -223,16 +282,33 @@ func set_goal(goal):
 	print(goal_targets)
 	
 	match goal_type:
+		
 		"collect":
-			
+			# TODO how to handle multiple target types to collect?
+			# taking only the first target type to collect
 			var target = goal_mods[0]
 			var sensor_type_data = "vision"
+			# zones with entities were detected per sensor type in sense_world()
 			var zones_with_entities = model_state["sensor_data"][sensor_type_data]
 			for zone in zones_with_entities:
 				if target in zone["data"]:
 					var location = zone["loc"]
+					# prevent duplicate locations
 					if location not in goal_targets:
 						goal_targets.append(location)
+		
+		"plant":
+			var target = "soil"
+			var sensor_type_data = "vision"
+			# zones with entities were detected per sensor type in sense_world()
+			var zones_with_entities = model_state["sensor_data"][sensor_type_data]
+			for zone in zones_with_entities:
+				if target in zone["data"]:
+					var location = zone["loc"]
+					# prevent duplicate locations
+					if location not in goal_targets:
+						goal_targets.append(location)
+			
 			
 	if goal_targets.size() > 0:
 		print("goal '%s' has possible targets: %d" % [goal_type, goal_targets.size()])
@@ -316,14 +392,18 @@ func create_command(input):
 			command = ["move","world","topdown","up", 1.0]
 		"move_screen_down":
 			command = ["move","world","topdown","down", 1.0] 
+			
 		# object interactions
 		# put item in inventory
 		"collect_here":
 			command = ["collect","world","local", 1.0]
+		
+		"plant_here":
+			command = ["plant","world","local", 1.0]
 		# eat held item = attach source to Metabot collector 
 		# generally results in stored energy for Metabot
-		"eat_here":
-			command = ["eat","equipment","main"]
+#		"eat_here":
+#			command = ["eat","equipment","main"]
 		# hold an item from world in body range
 #		"pickup_here":
 #			command = ["pickup","world","topdown","local", 1.0]
@@ -379,6 +459,9 @@ func send_impulse(command):
 #		["collect","world","local", 1.0]
 		"collect":
 			impulse = ["hands","grab",Vector2.ZERO]
+		
+		"plant":
+			impulse = ["hands","bury",Vector2.ZERO]
 			
 	return impulse
 
@@ -396,12 +479,22 @@ func execute_action(impulse):
 			var magnitude = impulse[2]
 			action = ["translate_body", vector * magnitude ]
 		"hands":
+			var action_method = impulse[1]
 			var location = impulse[2]
-#			var attach_node = bodypart
-			var attach_node = "backpack"
-			var attach_method = impulse[1]
-			var attach_target = ["any", "seed", "potato"]
-			action = ["attach_body", attach_target, attach_node, attach_method, location]
+			
+			match action_method:
+				"grab":
+		#			var attach_node = bodypart
+					var attach_node = "backpack"
+					var attach_method = action_method
+					var attach_target = ["any", "seed", "potato"]
+					action = ["attach_body", attach_target, attach_node, attach_method, location]
+				"bury":
+					# detach item from inventory
+					var detach_node = "backpack"
+					var detach_method = action_method
+					var detach_target = ["seed"]
+					action = ["detach_body", detach_target, detach_node, detach_method, location]
 	return action
 
 
@@ -507,8 +600,10 @@ class PlayerAgent extends Agent:
 			
 			if event.is_action_pressed("agent_collect"):
 				input = "collect_here"
-			if event.is_action_pressed("agent_eat"):
-				input = "eat_here"
+			if event.is_action_pressed("agent_plant"):
+				input = "plant_here"
+#			if event.is_action_pressed("agent_eat"):
+#				input = "eat_here"
 			
 			if input != null:
 #				print(input)

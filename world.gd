@@ -66,9 +66,76 @@ func initiate_simulator():
 func initiate_agents():
 	var agent_world = AgentWorld.new(Vector3i(3, 4, 1))
 	
-	var e_seed = AgentWorld.Entity.new()
-	var e_seed_location = Vector3i(1, 2, 0)
-	agent_world.add_entity(e_seed, e_seed_location)
+	var placement:Array
+	var shareable_placement:Array
+	var nonshareable_placement:Array
+	var detectable:Array
+	
+	placement = [
+		"seed",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"seed", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
+	
+	var e_seed_locations = [
+		Vector3i(1, 2, 0),
+	]
+	for location in e_seed_locations:
+		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		agent_world.add_entity(e_seed, location)
+		
+	
+	placement = [
+		"soil",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"soil", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
+	
+	var e_soil_locations = [
+		Vector3i(1, 1, 0),
+	]
+	for location in e_seed_locations:
+		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		agent_world.add_entity(e_soil, location)
+	
+	placement = [
+		"android",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"android", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
 	
 	# setup player android
 #	var e_android_player = AgentWorld.Entity.new()
@@ -92,7 +159,8 @@ func initiate_agents():
 	print(agent_world.coordinates)
 
 	# simulate agent ticks
-	var t = 3
+#	var t = 3
+	var t = 6
 	while (t > 0):
 	#	ai_agent.tick()
 	#	player_agent.tick()
@@ -130,7 +198,7 @@ func _process(_delta):
 			moving_state()
 #		State.ACTION:
 #			action_state()
-	update_world()
+#	update_world()
 
 
 func get_player_input():

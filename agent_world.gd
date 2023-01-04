@@ -53,10 +53,11 @@ func tick():
 	var actions_in_environment = []
 	for agent in agents:
 		var action_in_environment = agent.tick()
-		actions_in_environment.append([
-			agent.entity.id,
-			action_in_environment
-		])
+		if action_in_environment:
+			actions_in_environment.append([
+				agent.entity.id,
+				action_in_environment
+			])
 	print(actions_in_environment)
 	
 	for action_queued in actions_in_environment:
@@ -341,28 +342,38 @@ class Entity:
 	
 	# world layers which this entity has.
 	var placement = [
-		"seed", 
+#		"seed", 
 #		"potato",
-		"grounded",
+#		"grounded",
 	]
 	# world layers which entities of type can share a world zone.
 	var shareable_placement = [
-		"grounded",
+#		"grounded",
 	]
 	# world layers which entities of type can NOT share a world zone.
 	var nonshareable_placement = [
-		"seed", "potato",
+#		"seed", 
+#		"potato",
 	]
 	# which senses can detect this entity
 	var detectable = [
-		"vision"
+#		"vision"
 	]
 	
-	func _init():
+	func _init(
+				_placement = [], _shareable_placement = [], _nonshareable_placement = [],
+				_detectable = []
+				):
 		print("new Entity")
+		placement = _placement
+		shareable_placement = _shareable_placement
+		nonshareable_placement = _nonshareable_placement
+		detectable = _detectable
+		
 		print(placement)
 		print(shareable_placement)
 		print(nonshareable_placement)
+		print(detectable)
 	
 	
 	# return world areas occupied by entity.
