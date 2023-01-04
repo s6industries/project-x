@@ -116,7 +116,7 @@ func initiate_agents():
 	var e_soil_locations = [
 		Vector3i(1, 1, 0),
 	]
-	for location in e_seed_locations:
+	for location in e_soil_locations:
 		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
 		agent_world.add_entity(e_soil, location)
 	
@@ -159,9 +159,12 @@ func initiate_agents():
 	print(agent_world.coordinates)
 
 	# simulate agent ticks
-#	var t = 3
-	var t = 6
+#	var t = 4 # TODO integration test: AI android should complete goal "collect seed 1" after this many ticks
+	var t = 6 # TODO integration test: AI android should complete goal "plant seed 1" after this many ticks
+	var tick_count = 0
 	while (t > 0):
+		tick_count += 1
+		print(">>>>>>>>> simulate agent_world.tick(): tick %d >>>>>>>>> " % [tick_count])
 	#	ai_agent.tick()
 	#	player_agent.tick()
 		agent_world.tick()

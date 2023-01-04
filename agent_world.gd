@@ -54,48 +54,101 @@ func tick():
 	for agent in agents:
 		var action_in_environment = agent.tick()
 		if action_in_environment:
-			actions_in_environment.append([
+			var action_for_agent = [
 				agent.entity.id,
-				action_in_environment
-			])
+				action_in_environment,
+			]
+			actions_in_environment.append(action_for_agent)
 	print(actions_in_environment)
 	
+	# all actions from agents are queued, now proceed to resolve them and mutate all entities 
+	# before agents next gather data from their environment 
+	# ex. ["android_AI", ["translate_body", (0, -1)]]
+	# ex. ["android_AI", ["attach_body", ["any", "seed", "potato"], "backpack", "grab", (0, 0)]] 
 	for action_queued in actions_in_environment:
 		var entity_id = action_queued[0]
-		var entity:Entity = get_entity_by_id(entity_id)
 		var action_info =  action_queued[1]
-		var action_type = action_info[0]
+		var entity:Entity = get_entity_by_id(entity_id)
 		if entity:
-			
-			match action_type:
-				"translate_body":
-					var movement_vector = action_info[1]
-					# change entity center point
-					var new_center_point = Vector3(movement_vector.x, movement_vector.y, 0) + entity.center_point
-					
-					if check_world_bounds(new_center_point):
-						# remove entity from coordinate data
-						place_entity(entity, entity.center_point, false)
-						# re-add entity coordinate data at new center point
-						place_entity(entity, new_center_point, true)
-	#					model_state["body_position"] += next_action[1]
-	#					return true
-					else:
-						print("new_center_point out of world bounds")
-				# ["attach_body", ["any", "seed", "potato"], "backpack", "grab", (0, 0)] 
-				"attach_body":
-					var attach_target_location = action_info[4]
-					var grab_target_types = action_info[1]
-					var entity_attach_node = action_info[2]
-					var world_location = Vector3i(entity.center_point) + Vector3i()
-					var grabbed = grab_at_location(world_location, grab_target_types, entity_attach_node)
-					if grabbed:
-						print("grabbed %s" % [grabbed])
-						grabbed = get_entity_by_id(grabbed)
-						place_entity(grabbed, world_location, false)
-						entity.agent.attach_entity(grabbed, entity_attach_node)
-						print(entity.agent.model_state)
+			if action_info.has("steps"):
+				print("multistep action")
+				var action_steps = action_info["steps"]
+				var input = null
+				for step in action_steps:
+					input = resolve_action(entity, step, input)
+			else:
+				resolve_action(entity, action_info)
+
+
+func resolve_action(entity, action_info, input = null):
+	print("resolve_action %s %s" % [entity.id, action_info])
+	
+	var result = null
+	var action_type = action_info[0]
+	match action_type:
 		
+		# ex. [["android_AI", ["translate_body", (0, -1)]]]
+		"translate_body":
+			var movement_vector = action_info[1]
+			# change entity center point
+			var new_center_point = Vector3(movement_vector.x, movement_vector.y, 0) + entity.center_point
+			
+			if check_world_bounds(new_center_point):
+				# remove entity from coordinate data
+				place_entity(entity, entity.center_point, false)
+				# re-add entity coordinate data at new center point
+				place_entity(entity, new_center_point, true)
+#					model_state["body_position"] += next_action[1]
+#					return true
+			else:
+				print("new_center_point out of world bounds")
+				
+		# ["attach_body", ["any", "seed", "potato"], "backpack", "grab", (0, 0)] 
+		"attach_body":
+			var attach_target_location = action_info[4]
+			var grab_target_types = action_info[1]
+			var entity_attach_node = action_info[2]
+			var world_location = Vector3i(entity.center_point) + Vector3i()
+			var grabbed = grab_at_location(world_location, grab_target_types, entity_attach_node)
+			if grabbed:
+				print("grabbed %s" % [grabbed])
+				grabbed = get_entity_by_id(grabbed)
+				place_entity(grabbed, world_location, false)
+				entity.agent.attach_entity(grabbed, entity_attach_node)
+				print(entity.agent.model_state)
+		
+		# ex. ["detach_body", ["seed"], "backpack", "bury", (0, 0)]
+		"detach_body":
+			print(input)
+			# retrieve item from backpack
+			var detach_target = action_info[1][0]
+			var detach_node = action_info[2]
+#			entity.agent.get_attachments("backpack", "seed")
+			var detached = entity.agent.get_attachments(detach_node, detach_target)[0]
+			entity.agent.detach_entity(detached, detach_node)
+			result = detached
+			
+		# ex. ["attach_to", "seed", "soil", "bury", (0, 0)]
+		"attach_to":
+			print(input)
+			# get soil entity at agent entity's world location
+			var receiver_type = action_info[2]
+			var world_location = Vector3i(entity.center_point) + Vector3i()
+			var receiver = get_entities_of_type(["soil"], world_location)
+			# TODO attach to soil the seed entity (which is the result of previous detach body action)
+			# TODO when the seed is attached to soil, activate the seed's metabolism
+			place_entity(input, world_location, true)
+		
+		# ex. ["remember", "plant", "seed"]
+		"remember":
+			print(input)
+			var goal_type = action_info[1]
+			var goal_target = action_info[2]
+			entity.agent.create_memory(goal_type, goal_target)
+			
+	return result
+
+
 func _init(size_3D:Vector3i):
 	print("AgentWorld %d, %d, %d " % [size_3D.x, size_3D.y, size_3D.z])
 #	coordinates = generate_coordinates(size_3D.x, size_3D.y, size_3D.z)

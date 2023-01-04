@@ -38,7 +38,12 @@ var model_state = {
 		"backpack":[],
 		"digestion":[]
 	},
-	"sensor_data": []
+	"sensor_data": [],
+	"memory":{
+		"plant":{
+			"seed": 0
+		}
+	}
 }
 
  
@@ -65,7 +70,6 @@ var goals_prioritized = [
 ]
 var active_goal = null
 
-#var sensors = []
 var sensors = [
 	{
 		"type":"vision",
@@ -102,8 +106,8 @@ func _ready():
 #	pass # Replace with function body.
 	print("Agent ready")
 #	initiate_timer()
-	
-	
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
@@ -135,7 +139,7 @@ func create_input(goal):
 			if delta_vector.length() >= 1:
 				input = create_input_move_to_goal(delta_vector)
 			else:
-				input = "collect_here"
+				input = "plant_here"
 				print("entity is at goal. %s" % [input])
 		
 	if input != null:
@@ -169,29 +173,61 @@ func create_input_move_to_goal(delta_vector:Vector3i):
 	return input
 
 
+func get_attachments(attach_node, entity_type):
+	var attachments = []
+	if model_state["attachments"].has(attach_node):
+		for entity in model_state["attachments"][attach_node]:
+			if entity.placement.has(entity_type):
+				attachments.append(entity)
+			
+	return attachments
+
+
+func get_memory(goal_type, goal_target):
+	var memory = null
+	print("get_memory %s %s" % [goal_type, goal_target])
+	if model_state["memory"].has(goal_type):
+		if model_state["memory"][goal_type].has(goal_target):
+			memory = model_state["memory"][goal_type][goal_target]
+	
+	return memory
+
+
+func create_memory(goal_type, goal_target):
+	print("create_memory %s %s" % [goal_type, goal_target])
+	if model_state["memory"].has(goal_type):
+		if model_state["memory"][goal_type].has(goal_target):
+			model_state["memory"][goal_type][goal_target] += 1
+
+
 func check_goal_completed(goal):
 	print("check_goal_completed")
 	print(goal)
 	var is_goal_completed = false
 	
 	var goal_type = goal[0]
+	var target_info = goal[1]
 	match goal_type:
 		
 		# ex. ["collect", ["seed", 1], []],
 		"collect":
-			var target_type = ''
-			var current_amount = 0			
-			var goal_amount = 0
+			var target_type = target_info[0]
+			var current_amount = get_attachments("backpack", "seed").size()
+			var goal_amount = target_info[1]
 			print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
 			is_goal_completed = current_amount >= goal_amount
 			
 		# ex. ["plant", ["seed", 1], []],
 		"plant":
-			var target_type = ''
-			var current_amount = 0			
-			var goal_amount = 0
-			print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
-			is_goal_completed = current_amount >= goal_amount			
+			var target_type = target_info[0]
+			var memory = get_memory(goal_type, target_type)
+			if memory:
+				var current_amount = get_memory(goal_type, target_type)
+				var goal_amount = target_info[1]
+				print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
+				is_goal_completed = current_amount >= goal_amount
+			else:
+				print("no memory")	
 	
 	return is_goal_completed
 
@@ -466,8 +502,9 @@ func send_impulse(command):
 	return impulse
 
 
-## impulse translated to mutation of body in environment
-## "legs, normal speed, vector (0, -1)" => add force to body vector (0, -1)
+# impulse translated to mutation of body in environment
+# ex. "legs, normal speed, vector (0, -1)" => add force to body vector (0, -1)
+# the action is the agent's last intention to manipulate the world before all actions are resolved
 func execute_action(impulse):
 	print("action")
 	var action = null
@@ -480,7 +517,7 @@ func execute_action(impulse):
 			action = ["translate_body", vector * magnitude ]
 		"hands":
 			var action_method = impulse[1]
-			var location = impulse[2]
+			var relative_location = impulse[2]
 			
 			match action_method:
 				"grab":
@@ -488,13 +525,26 @@ func execute_action(impulse):
 					var attach_node = "backpack"
 					var attach_method = action_method
 					var attach_target = ["any", "seed", "potato"]
-					action = ["attach_body", attach_target, attach_node, attach_method, location]
+					action = ["attach_body", attach_target, attach_node, attach_method, relative_location]
 				"bury":
 					# detach item from inventory
 					var detach_node = "backpack"
 					var detach_method = action_method
 					var detach_target = ["seed"]
-					action = ["detach_body", detach_target, detach_node, detach_method, location]
+#					action = ["detach_body", detach_target, detach_node, detach_method, location]
+
+					var attach_location = "soil"
+					var attach_method = action_method
+					var attach_object = "seed"
+					# burying a seed in the soil is multiple actions simultaneously: detach seed from body entity > attach seed to soil entity
+					# TODO cleaner way to define multistep / simultaneous actions?
+					action = {
+						"steps":[
+							["detach_body", detach_target, detach_node, detach_method, relative_location],
+							["attach_to", attach_object, attach_location, attach_method, relative_location],
+							["remember", "plant", "seed"]
+						]
+					}
 	return action
 
 
@@ -530,6 +580,11 @@ func attach_entity(entity, attach_node):
 		model_state["attachments"][attach_node].append(entity)
 	else:
 		print("entity has no attach node '%s'" % [attach_node])
+
+
+func detach_entity(entity, attach_node):
+	if model_state["attachments"].has(attach_node):
+		model_state["attachments"][attach_node].erase(entity)
 
 
 func report_status():
