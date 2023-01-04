@@ -66,8 +66,77 @@ func test_metabots():
 #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
 	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
 	id += 1
+
+
+func test_entities_with_metabots():
+	metabots[id] = [0, Vector2i(20, 10)]
+	var potato = metabot_simulator.plant_potato(id)
+#	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
+	id += 1
+	
+	var placement:Array
+	var shareable_placement:Array
+	var nonshareable_placement:Array
+	var detectable:Array
+	
+	placement = [
+		"seed",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"seed", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
+	
+	# TODO implement seed source (as spaceship / headquarters?)
+	var e_seed_locations = [
+		Vector3i(1, 2, 0),
+	]
+	for location in e_seed_locations:
+		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		agent_world.add_entity(e_seed, location)
+		
+	
+	placement = [
+		"soil",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"soil", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
+	
+	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
+	# soil becomes a passthrough entity for plant metabots attached to it
+	# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
 	
 	
+	var e_soil_locations = [
+		Vector3i(1, 1, 0),
+	]
+	for location in e_soil_locations:
+		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		agent_world.add_entity(e_soil, location)
+	pass
+
+
 func initiate_agents():
 	
 	# TODO setup scenarios from data file (SQLite?)
@@ -203,6 +272,7 @@ func _ready():
 	initiate_agents()
 #	initiate_metabots()
 	
+#	test_entities_with_metabots()
 	test_agents()
 #	test_metabots()
 	

@@ -425,6 +425,16 @@ class Entity:
 #		"vision"
 	]
 	
+	# physical appearance / body shape
+	# this is often directly related to the metabot's lifecycle stage / health / metabolic state
+	# morphology features should update with lifecycle stage progression event
+	# changing morphology is generally how an agent senses that the entity is a valid target
+	# ex. potato is ready for harvesting 
+	var morphology = {
+#		"depth": "underground",
+#		"height": "short",
+	}
+	
 	func _init(
 				_placement = [], _shareable_placement = [], _nonshareable_placement = [],
 				_detectable = []
@@ -447,8 +457,26 @@ class Entity:
 		var zone = world_centerpoint
 		body_zones.append(zone)
 		return body_zones
+
+
+	func on_attach(attached_entity:Entity):
+		print("on_attach")
+		print(attached_entity)
 		
-		
+		# TODO when seed attaches to soil, add the soil's water and mineral pools 
+		# to the seed's metabot (potato) collector
+
+
+	func attach_metabot(_metabot): 
+		print("attach_metabot")
+		pass
+
+
+	# when metabot body changes, update the morphology presented to the environment/agents by the entity
+	func on_change_body(_body):
+		pass
+
+
 # https://docs.godotengine.org/en/stable/classes/class_astar.html
 # input agent, world, and type of motion (ground, air, liquid)
 # mark points not traversable
