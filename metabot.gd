@@ -64,9 +64,9 @@ func check_life_stage():
 	body_mass = 0
 	for part in body:
 		body_mass += part["mass"]
-		print("bodypart: %s" % part["name"])
+		# print("bodypart: %s" % part["name"])
 	
-	print("body mass: %f" % body_mass)
+	# print("body mass: %f" % body_mass)
 	if body_mass >= life_stage_progression[life_stage]:
 		life_stage += 1
 		print(">>> !!! life_stage progressed to %f !!!" % life_stage)
