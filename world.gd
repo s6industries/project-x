@@ -328,12 +328,12 @@ func update_world():
 		var stage = metabots[id][0]
 		temp_world[pos[1]][pos[0]] = POTATO_STAGE[stage]
 	
-	print(agent_world.entities)
+#	print(agent_world.entities)
 	var x2 = 0
 
 	# TODO: fix this. do not loop twice.
 	for entity in agent_world.entities:
-		print("placement", entity.placement)
+#		print("placement", entity.placement)
 		x = entity.center_point[0]
 		y = entity.center_point[1]
 		if entity.placement.has("seed"):
@@ -342,7 +342,7 @@ func update_world():
 			temp_world[y][x] = TILLED_SOIL
 
 	for entity in agent_world.entities:
-		print("placement", entity.placement)
+#		print("placement", entity.placement)
 		x = entity.center_point[0]
 		y = entity.center_point[1]
 		if entity.placement.has("android"):

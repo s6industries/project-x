@@ -294,9 +294,9 @@ func get_sensor_data(sensors:Array, origin:Vector3, ignored_entities = []):
 	print(origin)
 	
 	for sensor in sensors:
-		print(sensor.type)
-		print(sensor.mods)
-		print(sensor.range)
+#		print(sensor.type)
+#		print(sensor.mods)
+#		print(sensor.range)
 		match sensor.type:
 			"vision":
 				print("vision")
@@ -328,9 +328,9 @@ func get_detectable_entities(sensor, origin:Vector3, ignored_entities = []):
 	var range_x = get_range(origin.x, delta_x, 0, coordinates[0][0].size()-1)
 	var range_y = get_range(origin.y, delta_y, 0, coordinates[0].size()-1)
 	var range_z = get_range(origin.z, delta_z, 0, coordinates.size()-1)
-	print(range_x)
-	print(range_y)
-	print(range_z)
+#	print(range_x)
+#	print(range_y)
+#	print(range_z)
 	# from origin set scan range across all coordinate dimensions
 	var d = scan_coordinates_for_entities(range_x, range_y, range_z, sensor.type, sensor.mods, ignored_entities)
 	data_for_sensor.append_array(d)

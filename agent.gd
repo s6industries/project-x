@@ -393,8 +393,8 @@ func sense_world():
 	print("sense_world")
 	var sensor_data_frame = world.get_sensor_data_for_entity(entity.id)
 	model_state["sensor_data"] = sensor_data_frame
-	print("model_state for agent %s" % [entity.id])
-	print(model_state)
+#	print("model_state for agent %s" % [entity.id])
+#	print(model_state)
 #func sense_environment():
 #	if is_AI:
 #		print("environment")
