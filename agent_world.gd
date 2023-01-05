@@ -135,10 +135,20 @@ func resolve_action(entity, action_info, input = null):
 			# get soil entity at agent entity's world location
 			var receiver_type = action_info[2]
 			var world_location = Vector3i(entity.center_point) + Vector3i()
-			var receiver = get_entities_of_type(["soil"], world_location)
-			# TODO attach to soil the seed entity (which is the result of previous detach body action)
-			# TODO when the seed is attached to soil, activate the seed's metabolism
+			print(receiver_type)
 			place_entity(input, world_location, true)
+			var receiver_ids = get_entities_of_type([ receiver_type ], world_location)
+			print(receiver_ids)
+			var receiver:Entity = get_entity_by_id(receiver_ids[receiver_type][0])
+			print(receiver.tags)
+			
+			if (receiver.tags.has("soil")):
+				print("attach seed to soil")
+				var seed:Entity = input
+				print(input.tags)
+				# TODO attach to soil the seed entity (which is the result of previous detach body action)
+				# TODO when the seed is attached to soil, activate the seed's metabolism
+			
 		
 		# ex. ["remember", "plant", "seed"]
 		"remember":
@@ -405,6 +415,11 @@ class Entity:
 	
 	var pools = [] # resource pools that are available to attached metabots
 	
+	var tags = [
+#		"soil",
+#		"plant",
+	]
+	
 	# world layers which this entity has.
 	var placement = [
 #		"seed", 
@@ -425,15 +440,26 @@ class Entity:
 #		"vision"
 	]
 	
+	# physical appearance / body shape
+	# this is often directly related to the metabot's lifecycle stage / health / metabolic state
+	# morphology features should update with lifecycle stage progression event
+	# changing morphology is generally how an agent senses that the entity is a valid target
+	# ex. potato is ready for harvesting 
+	var morphology = {
+#		"depth": "underground",
+#		"height": "short",
+	}
+	
 	func _init(
 				_placement = [], _shareable_placement = [], _nonshareable_placement = [],
-				_detectable = []
+				_detectable = [], _tags = []
 				):
 		print("new Entity")
 		placement = _placement
 		shareable_placement = _shareable_placement
 		nonshareable_placement = _nonshareable_placement
 		detectable = _detectable
+		tags = _tags
 		
 		print(placement)
 		print(shareable_placement)
@@ -447,8 +473,26 @@ class Entity:
 		var zone = world_centerpoint
 		body_zones.append(zone)
 		return body_zones
+
+
+	func on_attach(attached_entity:Entity):
+		print("on_attach")
+		print(attached_entity)
 		
-		
+		# TODO when seed attaches to soil, add the soil's water and mineral pools 
+		# to the seed's metabot (potato) collector
+
+
+	func attach_metabot(_metabot): 
+		print("attach_metabot")
+		pass
+
+
+	# when metabot body changes, update the morphology presented to the environment/agents by the entity
+	func on_change_body(_body):
+		pass
+
+
 # https://docs.godotengine.org/en/stable/classes/class_astar.html
 # input agent, world, and type of motion (ground, air, liquid)
 # mark points not traversable

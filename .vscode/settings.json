@@ -1,4 +1,8 @@
 {
+<<<<<<< HEAD
 	"editor.insertSpaces": false,
 	"editor.detectIndentation": false
+=======
+    "editor.insertSpaces": false
+>>>>>>> 9b43a2bab7d50144942f9243e526a1dec546187f
 }

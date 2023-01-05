@@ -64,9 +64,10 @@ var goals = [
 	["explore", [], []],
 	["collect", ["seed", 1], []],
 	["plant", ["seed", 1], []],
+	["harvest", ["potato", 1], []]
 ]
 var goals_prioritized = [
-	2, 3, 1, 0
+	2, 3, 4, 1, 0
 ]
 var active_goal = null
 
@@ -141,6 +142,11 @@ func create_input(goal):
 			else:
 				input = "plant_here"
 				print("entity is at goal. %s" % [input])
+		
+		"harvest":
+			pass
+			# check if any visible potatoes are ready for harvest
+			
 		
 	if input != null:
 		send_input(input)
@@ -345,6 +351,10 @@ func set_goal(goal):
 					if location not in goal_targets:
 						goal_targets.append(location)
 			
+		"harvest":
+			pass
+			# look at all potatoes
+			# check morphology if ready for harvest
 			
 	if goal_targets.size() > 0:
 		print("goal '%s' has possible targets: %d" % [goal_type, goal_targets.size()])
@@ -596,7 +606,6 @@ func report_status():
 
 
 class AIAgent extends Agent:
-
 	
 	func _init(_world:AgentWorld):
 		is_AI = true

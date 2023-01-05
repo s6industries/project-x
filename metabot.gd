@@ -3,6 +3,7 @@ extends Node
 class_name Metabot
 
 signal life_stage_progressed
+signal body_changed
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -12,6 +13,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
 
 var is_active = false
 var environment = {}
@@ -49,11 +51,25 @@ var body_mass = 0
 func _init(temp_id: int):
 	id = temp_id
 	print("Metabot")
+	
 	converter.attach_collector(collector)
 	composer.attach_converter(converter)
 	composer.attach_body(body)
+	composer.connect("bodyparts_added", self.on_bodyparts_added)
 	
 	func_activate = Callable(self, "auto_activate")
+
+
+func on_bodyparts_added(bodyparts):
+	print("on_bodyparts_added")
+	pass
+	# recalculate bodymass
+	body_mass = 0
+	for part in body:
+		body_mass += part["mass"]
+		print("bodypart: %s" % part["name"])
+	print("body mass: %f" % body_mass)
+	emit_signal("body_changed", body_mass, body)
 
 
 # default to start metabolism on first tick
@@ -83,13 +99,7 @@ func tick():
 
 
 func check_life_stage():
-	# recalculate bodymass
-	body_mass = 0
-	for part in body:
-		body_mass += part["mass"]
-		print("bodypart: %s" % part["name"])
-	
-	print("body mass: %f" % body_mass)
+	print("check_life_stage")
 	if body_mass >= life_stage_progression[life_stage]:
 		life_stage += 1
 		print(">>> !!! life_stage progressed to %f !!!" % life_stage)
@@ -354,6 +364,8 @@ class Blueprint:
 
 
 class mComposer extends mComponent:
+	
+	signal bodyparts_added
 #	var objects_input = []
 #	var objects_processing = []
 #	var objects_output = []
@@ -394,3 +406,5 @@ class mComposer extends mComponent:
 				if blueprint.has_materials(converter):
 					var bodyparts = blueprint.execute(converter, bodypart_templates)
 					body.append_array(bodyparts)
+					# notify body is growing
+					emit_signal("bodyparts_added", bodyparts)

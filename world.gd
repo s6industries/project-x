@@ -1,6 +1,7 @@
 extends Node2D
 
 @export var world_label: Label
+@export var player_marker: Marker2D
 
 enum State { IDLE, MOVING, ACTION }
 const PLAYER = "@"
@@ -9,6 +10,8 @@ const POTATO_STAGE = [".", ";", "i", "P"]
 const SEED = "."
 const TILLED_SOIL = "="
 const MOVE_DELAY = 0.12
+const FONT_OFFSET = Vector2i(3, 4)
+const FONT_SIZE = Vector2i(6, 14)
 
 var player_pos: Vector2i
 var input_direction: Vector2i
@@ -20,6 +23,8 @@ var timer: Timer = null
 var can_move: bool = true
 
 var potato_stage: int
+var diagonal_moving_toggle: bool = false
+
 
 #const MetabotSimulator = preload("res://metabot_simulator.gd")
 var agent_world:AgentWorld
@@ -136,6 +141,12 @@ func initiate_metabots():
 	add_child(metabot_simulator)
 
 
+func initiate_agents():
+	
+	# TODO setup scenarios from data file (SQLite?)
+	agent_world = AgentWorld.new(Vector3i(3, 4, 1))
+
+
 func test_metabots():
 	# metabots plant potat AT
 	metabots[id] = [0, Vector2i(20, 10)]
@@ -150,6 +161,73 @@ func test_metabots():
 #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
 	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
 	id += 1
+
+
+func test_entities_with_metabots():
+	metabots[id] = [0, Vector2i(20, 10)]
+	var potato = metabot_simulator.plant_potato(id)
+#	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
+	id += 1
+	
+	var placement:Array
+	var shareable_placement:Array
+	var nonshareable_placement:Array
+	var detectable:Array
+	var tags:Array
+	
+	placement = [
+		"seed",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"seed", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
+	tags = [
+		"seed"
+	]
+	
+	# TODO implement seed source (as spaceship / headquarters?)
+	var e_seed_locations = [
+		Vector3i(1, 1, 0),
+	]
+	for location in e_seed_locations:
+		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable, tags)
+		agent_world.add_entity(e_seed, location)
+		
+	
+	placement = [
+		"soil",
+		"grounded",
+	]
+	# world layers which entities of type can share a world zone.
+	shareable_placement = [
+		"grounded",
+	]
+	# world layers which entities of type can NOT share a world zone.
+	nonshareable_placement = [
+		"soil", 
+	]
+	# which senses can detect this entity
+	detectable = [
+		"vision"
+	]
+	tags = [
+		"soil"
+	]
+	
+	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
+	# soil becomes a passthrough entity for plant metabots attached to it
+	# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
 	
 	
 # func initiate_agents():	
@@ -195,7 +273,7 @@ func potato_life_stage_progressed(id, stage):
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 	match state:
 		State.IDLE:
 			idle_state()
@@ -207,15 +285,18 @@ func _process(_delta):
 
 
 func get_player_input():
-	if Input.is_action_pressed("ui_left"):
-		return Vector2i.LEFT
-	if Input.is_action_pressed("ui_right"):
-		return Vector2i.RIGHT
-	if Input.is_action_pressed("ui_up"):
-		return Vector2i.UP
-	if Input.is_action_pressed("ui_down"):
-		return Vector2i.DOWN
-	return Vector2i.ZERO
+	var x = round(Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left"))
+	var y = round(Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up"))
+	if x == 0 and y == 0:
+		return Vector2i.ZERO
+	# Cardinal movement (LEFT, RIGHT, UP, DOWN)
+	if x == 0 or y == 0:
+		return Vector2i(x, y)
+	# Diagonal movement
+	diagonal_moving_toggle = !diagonal_moving_toggle
+	if diagonal_moving_toggle:
+		return Vector2i(x, 0)
+	return Vector2i(0, y)
 
 
 func idle_state():
@@ -234,12 +315,14 @@ func moving_state():
 
 
 func update_world():
-	
-	var x = 0
-	var y = 0
+	var x = player_pos[0]
+	var y = player_pos[1]
 	var temp_world = world_map.duplicate()
-		
-	# Temp potato. TODO
+	if y < len(temp_world) and x < len(temp_world[0]):
+		temp_world[y][x] = PLAYER
+		player_marker.position.x = x * FONT_SIZE.x + FONT_OFFSET.x
+		player_marker.position.y = y * FONT_SIZE.y + FONT_OFFSET.y
+	
 	for id in metabots:
 		var pos = metabots[id][1]
 		var stage = metabots[id][0]
