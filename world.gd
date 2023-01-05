@@ -299,6 +299,20 @@ func test_agents():
 		t -= 1
 
 
+# Called when the node enters the scene tree for the first time.
+func _ready():
+
+	initiate_agents()
+#	initiate_metabots()
+
+#	test_entities_with_metabots()
+	test_agents()
+#	test_metabots()
+
+	load_world()
+	initiate_timer()
+
+
 func potato_life_stage_progressed(id, stage):
 	print("potato_life_stage_progressed: ", id, stage)
 	potato_stage = stage
