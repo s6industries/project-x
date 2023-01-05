@@ -160,8 +160,8 @@ func _init(size_3D:Vector3i):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("_ready AgentWorld ")
-#	tick_interval = 1.0
-#	initiate_timer()
+	tick_interval = 1.0
+	initiate_timer()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -373,8 +373,8 @@ func scan_coordinates_for_entities(range_x, range_y, range_z, sensor_type, senso
 func check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z, ignored_entities = []):
 	var sensor_data = []
 	var coordinate_data = coordinates[z][y][x]
-	print("checking coordinate %d, %d, %d" % [x, y, z])
-	print(coordinate_data)
+	# print("checking coordinate %d, %d, %d" % [x, y, z])
+	# print(coordinate_data)
 #	sensor_data.append_array(coordinate_data)
 	for entity_id in coordinate_data:
 		if entities_by_id.has(entity_id) and entity_id not in ignored_entities:

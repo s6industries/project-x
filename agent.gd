@@ -73,7 +73,7 @@ var active_goal = null
 var sensors = [
 	{
 		"type":"vision",
-		"range": 3,
+		"range": 99,
 		"mods": [
 			"day",
 			"night"
