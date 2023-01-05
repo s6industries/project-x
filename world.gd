@@ -1,11 +1,14 @@
 extends Node2D
 
 @export var world_label: Label
+@export var player_marker: Marker2D
 
 enum State { IDLE, MOVING, ACTION }
 const PLAYER = "@"
 const POTATO_STAGE = [".", ";", "i", "P"]
 const MOVE_DELAY = 0.12
+const FONT_OFFSET = Vector2i(3, 4)
+const FONT_SIZE = Vector2i(6, 14)
 
 var player_pos: Vector2i
 var input_direction: Vector2i
@@ -17,6 +20,8 @@ var timer: Timer = null
 var can_move: bool = true
 
 var potato_stage: int
+var diagonal_moving_toggle: bool = false
+
 
 #const MetabotSimulator = preload("res://metabot_simulator.gd")
 var agent_world:AgentWorld
@@ -294,23 +299,6 @@ func test_agents():
 		t -= 1
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	
-	initiate_agents()
-#	initiate_metabots()
-	
-#	test_entities_with_metabots()
-	test_agents()
-#	test_metabots()
-	
-#	load_world()
-#	initiate_timer()
-	
-#	var test_class = TestClass.new()
-#	test_class.hello_world()
-
-
 func potato_life_stage_progressed(id, stage):
 	print("potato_life_stage_progressed: ", id, stage)
 	potato_stage = stage
@@ -318,7 +306,7 @@ func potato_life_stage_progressed(id, stage):
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _physics_process(_delta):
 	match state:
 		State.IDLE:
 			idle_state()
@@ -330,15 +318,18 @@ func _process(_delta):
 
 
 func get_player_input():
-	if Input.is_action_pressed("ui_left"):
-		return Vector2i.LEFT
-	if Input.is_action_pressed("ui_right"):
-		return Vector2i.RIGHT
-	if Input.is_action_pressed("ui_up"):
-		return Vector2i.UP
-	if Input.is_action_pressed("ui_down"):
-		return Vector2i.DOWN
-	return Vector2i.ZERO
+	var x = round(Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left"))
+	var y = round(Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up"))
+	if x == 0 and y == 0:
+		return Vector2i.ZERO
+	# Cardinal movement (LEFT, RIGHT, UP, DOWN)
+	if x == 0 or y == 0:
+		return Vector2i(x, y)
+	# Diagonal movement
+	diagonal_moving_toggle = !diagonal_moving_toggle
+	if diagonal_moving_toggle:
+		return Vector2i(x, 0)
+	return Vector2i(0, y)
 
 
 func idle_state():
@@ -362,18 +353,13 @@ func update_world():
 	var temp_world = world_map.duplicate()
 	if y < len(temp_world) and x < len(temp_world[0]):
 		temp_world[y][x] = PLAYER
+		player_marker.position.x = x * FONT_SIZE.x + FONT_OFFSET.x
+		player_marker.position.y = y * FONT_SIZE.y + FONT_OFFSET.y
 	
-	# Temp potato. TODO
 	for id in metabots:
 		var pos = metabots[id][1]
 		var stage = metabots[id][0]
 		temp_world[pos[1]][pos[0]] = POTATO_STAGE[stage]
-		
-#	for fruit in groceries:
-#    var amount = groceries[fruit]
-
-#	var potato_pos = Vector2i(20, 10)
-#	temp_world[potato_pos[1]][potato_pos[0]] = POTATO_STAGE[potato_stage]
 	
 	var world_string = ""
 	for row in temp_world:
