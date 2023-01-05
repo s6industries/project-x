@@ -52,6 +52,12 @@ func initiate_metabots():
 	add_child(metabot_simulator)
 
 
+func initiate_agents():
+	
+	# TODO setup scenarios from data file (SQLite?)
+	agent_world = AgentWorld.new(Vector3i(3, 4, 1))
+
+
 func test_metabots():
 	# metabots plant potat AT
 	metabots[id] = [0, Vector2i(20, 10)]
@@ -79,6 +85,7 @@ func test_entities_with_metabots():
 	var shareable_placement:Array
 	var nonshareable_placement:Array
 	var detectable:Array
+	var tags:Array
 	
 	placement = [
 		"seed",
@@ -96,13 +103,16 @@ func test_entities_with_metabots():
 	detectable = [
 		"vision"
 	]
+	tags = [
+		"seed"
+	]
 	
 	# TODO implement seed source (as spaceship / headquarters?)
 	var e_seed_locations = [
-		Vector3i(1, 2, 0),
+		Vector3i(1, 1, 0),
 	]
 	for location in e_seed_locations:
-		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable, tags)
 		agent_world.add_entity(e_seed, location)
 		
 	
@@ -122,6 +132,9 @@ func test_entities_with_metabots():
 	detectable = [
 		"vision"
 	]
+	tags = [
+		"soil"
+	]
 	
 	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
 	# soil becomes a passthrough entity for plant metabots attached to it
@@ -132,15 +145,22 @@ func test_entities_with_metabots():
 		Vector3i(1, 1, 0),
 	]
 	for location in e_soil_locations:
-		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable, tags)
 		agent_world.add_entity(e_soil, location)
-	pass
-
-
-func initiate_agents():
 	
-	# TODO setup scenarios from data file (SQLite?)
-	agent_world = AgentWorld.new(Vector3i(3, 4, 1))
+	# bury seeds in soil
+	# if seed is buried in soil, attach seed entity to soil entity
+	#
+	
+	# seed metabot should detect conditions to activate its metabolism
+	# sufficient pools of water and minerals connected to its collectors
+	
+	# as the potato grows, its morphology should change
+	
+	
+	# an agent with vision sensor should detect the potato has grown to sufficient size for harvesting
+	
+	pass
 
 
 func on_new_soil(_self:AgentWorld.Entity):
@@ -161,6 +181,7 @@ func test_agents():
 	var shareable_placement:Array
 	var nonshareable_placement:Array
 	var detectable:Array
+	var tags:Array
 	
 	placement = [
 		"seed",
@@ -178,13 +199,16 @@ func test_agents():
 	detectable = [
 		"vision"
 	]
-	
+	tags = [
+		"seed"
+	]
 	# TODO implement seed source (as spaceship / headquarters?)
 	var e_seed_locations = [
 		Vector3i(1, 2, 0),
 	]
 	for location in e_seed_locations:
-		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, 
+				detectable, tags)
 		agent_world.add_entity(e_seed, location)
 		
 	
@@ -204,7 +228,9 @@ func test_agents():
 	detectable = [
 		"vision"
 	]
-	
+	tags = [
+		"soil"
+	]
 	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
 	# soil becomes a passthrough entity for plant metabots attached to it
 	# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
@@ -214,7 +240,8 @@ func test_agents():
 		Vector3i(1, 1, 0),
 	]
 	for location in e_soil_locations:
-		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
+		var e_soil = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, 
+				detectable, tags)
 		agent_world.add_entity(e_soil, location)
 	
 	placement = [
@@ -257,7 +284,8 @@ func test_agents():
 
 	# simulate agent ticks
 #	var t = 4 # TODO integration test: AI android should complete goal "collect seed 1" after this many ticks
-	var t = 6 # TODO integration test: AI android should complete goal "plant seed 1" after this many ticks
+	var t = 5
+#	var t = 6 # TODO integration test: AI android should complete goal "plant seed 1" after this many ticks
 	var tick_count = 0
 	while (t > 0):
 		tick_count += 1

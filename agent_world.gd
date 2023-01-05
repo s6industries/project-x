@@ -135,10 +135,20 @@ func resolve_action(entity, action_info, input = null):
 			# get soil entity at agent entity's world location
 			var receiver_type = action_info[2]
 			var world_location = Vector3i(entity.center_point) + Vector3i()
-			var receiver = get_entities_of_type(["soil"], world_location)
-			# TODO attach to soil the seed entity (which is the result of previous detach body action)
-			# TODO when the seed is attached to soil, activate the seed's metabolism
+			print(receiver_type)
 			place_entity(input, world_location, true)
+			var receiver_ids = get_entities_of_type([ receiver_type ], world_location)
+			print(receiver_ids)
+			var receiver:Entity = get_entity_by_id(receiver_ids[receiver_type][0])
+			print(receiver.tags)
+			
+			if (receiver.tags.has("soil")):
+				print("attach seed to soil")
+				var seed:Entity = input
+				print(input.tags)
+				# TODO attach to soil the seed entity (which is the result of previous detach body action)
+				# TODO when the seed is attached to soil, activate the seed's metabolism
+			
 		
 		# ex. ["remember", "plant", "seed"]
 		"remember":
@@ -405,6 +415,11 @@ class Entity:
 	
 	var pools = [] # resource pools that are available to attached metabots
 	
+	var tags = [
+#		"soil",
+#		"plant",
+	]
+	
 	# world layers which this entity has.
 	var placement = [
 #		"seed", 
@@ -437,13 +452,14 @@ class Entity:
 	
 	func _init(
 				_placement = [], _shareable_placement = [], _nonshareable_placement = [],
-				_detectable = []
+				_detectable = [], _tags = []
 				):
 		print("new Entity")
 		placement = _placement
 		shareable_placement = _shareable_placement
 		nonshareable_placement = _nonshareable_placement
 		detectable = _detectable
+		tags = _tags
 		
 		print(placement)
 		print(shareable_placement)
