@@ -343,8 +343,8 @@ func action_state():
 	var item = get_equipped_item()
 	if item == HOE and get_world_item_at(player_pos) == BLANK:
 		set_world_item_at(player_pos, TILLED_SOIL)
-		timer.set_wait_time(MOVE_DELAY)
-		timer.start()
+	timer.set_wait_time(MOVE_DELAY)
+	timer.start()
 
 
 func update_world():
