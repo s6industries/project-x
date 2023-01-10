@@ -14,6 +14,16 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://agent.gd"
 }, {
+"base": "Node",
+"class": &"AgentWorld",
+"language": &"GDScript",
+"path": "res://agent_world.gd"
+}, {
+"base": "Node",
+"class": &"Entities",
+"language": &"GDScript",
+"path": "res://entities.gd"
+}, {
 "base": "Control",
 "class": &"Joystick",
 "language": &"GDScript",
@@ -41,6 +51,8 @@ _global_script_classes=[{
 }]
 _global_script_class_icons={
 "Agent": "",
+"AgentWorld": "",
+"Entities": "",
 "Joystick": "",
 "Metabot": "",
 "MetabotSimulator": "",
@@ -57,10 +69,10 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=360
-window/size/viewport_height=640
+window/size/viewport_width=720
+window/size/viewport_height=360
 window/handheld/orientation=1
-window/stretch/mode="canvas_items"
+window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 
 [input]

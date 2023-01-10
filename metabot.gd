@@ -3,6 +3,7 @@ extends Node
 class_name Metabot
 
 signal life_stage_progressed
+signal body_changed
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,6 +14,10 @@ func _ready():
 func _process(delta):
 	pass
 
+
+var is_active = false
+var environment = {}
+var func_activate = null # FuncRef
 	
 var species = null
 var species_instance_id = 0
@@ -21,7 +26,7 @@ var species_instance_id = 0
 var body = []
 
 #	var sensor = mSensor.new()
-var collector = mCollector.new()
+var collector = mCollector.new()                                                                                     
 #	var decomposer = mDecomposer.new()
 #	var storer = mStorer.new()
 var converter = mConverter.new()
@@ -46,18 +51,52 @@ var body_mass = 0
 func _init(temp_id: int):
 	id = temp_id
 	print("Metabot")
+	
 	converter.attach_collector(collector)
 	composer.attach_converter(converter)
 	composer.attach_body(body)
+	composer.connect("bodyparts_added", self.on_bodyparts_added)
+	
+	func_activate = Callable(self, "auto_activate")
+
+
+func on_bodyparts_added(bodyparts):
+	print("on_bodyparts_added")
+	pass
+	# recalculate bodymass
+	body_mass = 0
+	for part in body:
+		body_mass += part["mass"]
+		print("bodypart: %s" % part["name"])
+	print("body mass: %f" % body_mass)
+	emit_signal("body_changed", body_mass, body)
+
+
+# default to start metabolism on first tick
+func auto_activate(_self, environment):
+	return true
+
+
+func check_active(environment):
+	if func_activate:
+		if func_activate.call_func(self, environment):
+			is_active = true
+	return false
+
 
 # 1 tick = 1 hour, game time
 # 1 day, game time = 24 ticks
 func tick():
+	check_active(environment)
+	if not is_active:
+		return 
+		
 	for component in components:
 		component.tick()
 	
 	check_life_stage()
 	report_status()
+
 
 func check_life_stage():
 	# recalculate bodymass
@@ -72,6 +111,7 @@ func check_life_stage():
 		print(">>> !!! life_stage progressed to %f !!!" % life_stage)
 		# emit_signal("life_stage_progressed", life_stage)
 		emit_signal("life_stage_progressed", id, life_stage)
+
 
 func report_status():
 	var log = "species: %s, instance: %f, life_stage: %f"
@@ -113,6 +153,7 @@ class Pool:
 		count -= output
 		return output
 
+
 class mComponent:
 	var type = null
 	var connections = []
@@ -121,22 +162,26 @@ class mComponent:
 	
 	func _init():
 		print("mComponent")
-	
+
+
 	func pull(input:int):
 		pool.count += input
 		return pool.count
-		
+
+
 	func _process(amount:int):
 		print("process")
 		output = amount
 		pool.count -= amount
 		return pool.count
-		
+
+
 	func push(amount:int):
 		var released = amount
 		output -= amount
 		return released
-		
+
+
 	func tick():
 		print("tick: component")
 		# TODO pull resource from upstream connection
@@ -145,12 +190,13 @@ class mComponent:
 #		var output = _process(input)
 #		push(output)
 
+
 #class mSensor extends mComponent:
 #	var sensing = true
 #	func _init():
 #		print("mSensor")
-	
-	
+
+
 ## Collects resources from attached sources on each tick
 class mCollector extends mComponent:
 	var objects_collected = []
@@ -158,20 +204,33 @@ class mCollector extends mComponent:
 	var collections = {}
 	var amount_collected = 1
 	var collection_efficiency = 1.0
-	
+
+
 	func _init():
 		print("mCollector")
+
 
 	func add_source(source:Pool):
 		sources.append(source)
 		collections[source.name] = 0
-		
+
+
 	func tick():
 		print("tick: mCollector")
 		for source in sources:
 			var amount = amount_collected * collection_efficiency
 			var collected = source.drain(amount)
 			collections[source.name] += collected
+
+
+	func get_source_amount(source_name):
+		var amount = 0
+		for source in sources:
+			if source.name == source_name:
+				amount += source.count 
+
+		return amount
+
 
 #class mDecomposer extends mComponent:
 #	var objects_input = []
@@ -187,6 +246,7 @@ class mCollector extends mComponent:
 #	func _init():
 #		print("mStorer")
 
+
 class Recipe:
 	
 	var ingredients = {
@@ -200,7 +260,8 @@ class Recipe:
 	
 	func _init():
 		print("Recipe")
-		
+	
+	
 	func has_ingredients(collector:mCollector):
 		for i in ingredients:
 			if !collector.collections.has(i):
@@ -209,12 +270,14 @@ class Recipe:
 				return false
 		
 		return true
-	
+
+
 	func execute(collector:mCollector):
 		for i in ingredients:
 			collector.collections[i] -= ingredients[i]
 		
 		return results
+
 
 ## Converts resources from [mCollector] into energy, body mass, etc.
 class mConverter extends  mComponent:
@@ -233,10 +296,12 @@ class mConverter extends  mComponent:
 	
 	func _init():
 		print("mConverter")
-		
+
+
 	func attach_collector(c:mCollector):
 		collector = c
-		
+
+
 	func tick():
 		print("tick: mConverter")
 		
@@ -252,6 +317,7 @@ class mConverter extends  mComponent:
 						converted[r] = results[r]
 		for c in converted:
 			print("converted: %s x %f" % [c, converted[c]])
+
 
 ## Blueprints create/augment body parts from raw materials (converted from collected resources)
 class Blueprint:
@@ -272,10 +338,12 @@ class Blueprint:
 #			"layer": "underground"
 #		}
 	}
-	
+
+
 	func _init():
 		print("Blueprint")
-		
+
+
 	func has_materials(converter:mConverter):
 		for m in materials:
 			if !converter.converted.has(m):
@@ -284,7 +352,8 @@ class Blueprint:
 				return false
 		
 		return true
-	
+
+
 	func execute(converter:mConverter, templates:Dictionary):
 		for m in materials:
 			converter.converted[m] -= materials[m]
@@ -299,7 +368,10 @@ class Blueprint:
 			
 		return bodyparts_created
 
+
 class mComposer extends mComponent:
+	
+	signal bodyparts_added
 #	var objects_input = []
 #	var objects_processing = []
 #	var objects_output = []
@@ -318,16 +390,20 @@ class mComposer extends mComponent:
 #			"layer": "underground"
 #		}
 	}
-	
+
+
 	func _init():
 		print("mComposer")
-	
+
+
 	func attach_converter(c:mConverter):
 		converter = c
-		
+
+
 	func attach_body(b:Array):
 		body = b
-		
+
+
 	func tick():
 		print("tick: mComposer")
 		
@@ -336,5 +412,5 @@ class mComposer extends mComponent:
 				if blueprint.has_materials(converter):
 					var bodyparts = blueprint.execute(converter, bodypart_templates)
 					body.append_array(bodyparts)
-			
-
+					# notify body is growing
+					emit_signal("bodyparts_added", bodyparts)

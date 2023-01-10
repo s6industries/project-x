@@ -6,13 +6,13 @@
 
 [node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "inventory_label", "player_marker", "button", "button2")]
 script = ExtResource("1_08pvc")
-world_label = NodePath("Map")
+world_label = NodePath("WorldLabel")
 inventory_label = NodePath("CanvasLayer/InventoryLabel")
 player_marker = NodePath("PlayerPosition")
 button = NodePath("CanvasLayer/Button")
 button2 = NodePath("CanvasLayer/Button2")
 
-[node name="Map" type="Label" parent="."]
+[node name="WorldLabel" type="Label" parent="."]
 offset_right = 432.0
 offset_bottom = 336.0
 size_flags_horizontal = 3

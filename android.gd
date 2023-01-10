@@ -10,8 +10,8 @@ func _ready():
 func _process(delta):
 	pass
 
-func _init():
-	super._init()
+func _init(id: int):
+	super._init(id)
 	
 	species = "android"
 	
