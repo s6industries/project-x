@@ -4,12 +4,15 @@
 [ext_resource type="Script" path="res://world.gd" id="1_08pvc"]
 [ext_resource type="PackedScene" uid="uid://ckk0xa2w80n7a" path="res://joystick/joystick.tscn" id="3_0f2o7"]
 
-[node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "player_marker")]
+[node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "inventory_label", "player_marker", "button", "button2")]
 script = ExtResource("1_08pvc")
-world_label = NodePath("Label")
+world_label = NodePath("WorldLabel")
+inventory_label = NodePath("CanvasLayer/InventoryLabel")
 player_marker = NodePath("PlayerPosition")
+button = NodePath("CanvasLayer/Button")
+button2 = NodePath("CanvasLayer/Button2")
 
-[node name="Label" type="Label" parent="."]
+[node name="WorldLabel" type="Label" parent="."]
 offset_right = 432.0
 offset_bottom = 336.0
 size_flags_horizontal = 3
@@ -49,6 +52,7 @@ position = Vector2(-3, -4)
 remote_path = NodePath("../../Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
 offset = Vector2(0, 100)
 current = true
 
@@ -56,3 +60,31 @@ current = true
 
 [node name="Joystick" parent="CanvasLayer" instance=ExtResource("3_0f2o7")]
 joystick_mode = 1
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(200, 50)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -25.0
+offset_right = 200.0
+offset_bottom = 25.0
+grow_vertical = 2
+
+[node name="Button2" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(200, 50)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 206.0
+offset_top = -26.0
+offset_right = 406.0
+offset_bottom = 24.0
+grow_vertical = 2
+
+[node name="InventoryLabel" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Button2" to="." method="_on_button_2_pressed"]
