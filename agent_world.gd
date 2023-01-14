@@ -15,6 +15,8 @@ var coordinates = []
 
 var timer:Timer
 var tick_interval:float
+var autostart_timer: bool
+
 
 static func generate_coordinates(_z, _y, _x):
 	var coordinates = []
@@ -38,6 +40,30 @@ static func generate_coordinates(_z, _y, _x):
 		z += 1
 		
 	return coordinates
+
+
+func _init(size_3D:Vector3i, _autostart_timer: bool):
+	print("AgentWorld %d, %d, %d " % [size_3D.x, size_3D.y, size_3D.z])
+#	coordinates = generate_coordinates(size_3D.x, size_3D.y, size_3D.z)
+	coordinates = generate_coordinates(size_3D.z, size_3D.y, size_3D.x)
+	print(coordinates)
+	autostart_timer = _autostart_timer
+	
+	
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print("_ready AgentWorld ")
+	if (autostart_timer):
+		tick_interval = 1.0
+		initiate_timer()
+	else:
+		print("must manually initiate_timer() or tick()")
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	
+	pass	
 
 
 func initiate_timer():
@@ -158,26 +184,6 @@ func resolve_action(entity, action_info, input = null):
 			entity.agent.create_memory(goal_type, goal_target)
 			
 	return result
-
-
-func _init(size_3D:Vector3i):
-	print("AgentWorld %d, %d, %d " % [size_3D.x, size_3D.y, size_3D.z])
-#	coordinates = generate_coordinates(size_3D.x, size_3D.y, size_3D.z)
-	coordinates = generate_coordinates(size_3D.z, size_3D.y, size_3D.x)
-	print(coordinates)
-	
-	
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	print("_ready AgentWorld ")
-	tick_interval = 1.0
-	initiate_timer()
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	
-	pass	
 
 
 func get_entity_by_id(_id:String) -> Entity:

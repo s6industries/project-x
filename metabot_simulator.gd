@@ -9,6 +9,25 @@ class_name MetabotSimulator
 var timer: Timer = null
 var metabots = []
 var tick_interval = 1.0
+var timer_autostart: bool
+
+
+func _init(_timer_autostart: bool):
+	print("MetabotSimulator")
+	timer_autostart = _timer_autostart
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print("_ready")
+	if timer_autostart:
+		initiate_timer()
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
 
 func initiate_timer():
 	timer = Timer.new()
@@ -19,15 +38,10 @@ func initiate_timer():
 	timer.start(tick_interval)
 	
 func tick():
-	print("TICK.")
+	print("TICK MetabotSimulator")
 	for mbot in metabots:
 		mbot.tick()
 	
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	print("_ready")
-	initiate_timer()
-
 
 func plant_potato(id: int):
 	# Plant a potato
@@ -53,17 +67,6 @@ func activate_potato(_self:Potato, environment):
 		return true
 	
 	return false
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func _init():
-	print("MetabotSimulator")
-	
-#	var mbot = Metabot.new()
 
 
 
