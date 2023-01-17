@@ -351,8 +351,14 @@ func action_state():
 		return
 	state = State.DELAY
 	var item = get_equipped_item()
+	var location = Vector3i(player_pos[0], player_pos[1], 0)
+	# TODO: change get_world_item_at to agent_world.get_item_at()
 	if item == HOE and get_world_item_at(player_pos) == BLANK:
-		set_world_item_at(player_pos, TILLED_SOIL)
+		spawn_tilled_soil(location)
+		# set_world_item_at(player_pos, TILLED_SOIL)
+	# TODO: change get_world_item_at to agent_world.get_item_at()
+	elif item == SEED and get_world_item_at(player_pos) == TILLED_SOIL:		
+		spawn_seed(location)
 	timer.set_wait_time(MOVE_DELAY)
 	timer.start()
 
