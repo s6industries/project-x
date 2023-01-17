@@ -5,6 +5,9 @@ extends Node2D
 @export var player_marker: Marker2D
 @export var button: Button
 @export var button2: Button
+@export var inventory_button_left: Button
+@export var inventory_button_right: Button
+@export var inventory_button_equip: Button
 
 enum State { IDLE, MOVING, ACTION, DELAY }
 const PLAYER = "@"
@@ -13,6 +16,7 @@ const WALL = "#"
 const HOE = "h"
 const BLANK = " "
 const TILLED_SOIL = "="
+const SHIP = "S"
 const POTATO_STAGE = [".", ";", "i", "P"]
 const SEED = "."
 const MOVE_DELAY = 0.12
@@ -31,9 +35,11 @@ var timer: Timer = null
 # var metabot_simulator
 var potato_stage: int
 var diagonal_moving_toggle: bool = false
-var inventory: Array = Array()
+var inventory: Dictionary = Dictionary()
+var inventory_array: Array = Array()
 var equipped: int = -1
 var action_button_pressed = false
+var inventory_selection_index = 0
 
 #const MetabotSimulator = preload("res://metabot_simulator.gd")
 var agent_world:AgentWorld
@@ -158,7 +164,7 @@ func _ready():
 	
 	load_world()
 	initiate_timer()
-	
+	inventory_menu_visible(false)
 	# TODO setup scenarios from data file (SQLite?)
 	# agent_world = AgentWorld.new(Vector3i(3, 4, 1))
 
@@ -320,6 +326,10 @@ func observe_surroundings():
 	var y = player_pos[1]
 	var position = world_map[y][x]
 	if position == HOE:
+		button.text = "Pick up hoe"
+		button.show()
+	elif position == SHIP:
+		button.text = "Get seeds"
 		button.show()
 	else:
 		button.hide()
@@ -399,16 +409,18 @@ func update_inventory():
 	if inventory.size() == 0:
 		inventory_label.text = ""
 		return
+	inventory_menu_visible(true)
 	var text: String = "Inventory: "
 	for item in inventory:
-		text += item + " "
+		var count = inventory[item]
+		text += item + " x" + str(count) + ", "
 	inventory_label.text = text
-	if equipped < 0 or equipped >= inventory.size():
+	if equipped < 0 or equipped >= inventory_array.size():
 		button2.hide()
 		return
-	button2.text = "Use " + inventory[equipped]
+	button2.text = "Use " + inventory_array[equipped]
 	button2.show()
-	inventory_label.text += "\nEquipped: " + inventory[equipped]
+	inventory_label.text += "\nEquipped: " + inventory_array[equipped]
 	
 
 
@@ -430,9 +442,13 @@ func animation_completed():
 
 func _on_button_pressed():
 	print("PICKUP BUTTON PRESSED")
-	var item = remove_world_item_at(player_pos)
-	inventory.append(item)
-	equipped = inventory.size() - 1
+	var item = get_world_item_at(player_pos)
+	if item == HOE:
+		item = remove_world_item_at(player_pos)
+		add_item_to_inventory(item)
+	elif item == SHIP:
+		item = SEED
+		add_item_to_inventory(item)	
 
 
 func get_world_item_at(position: Vector2i):
@@ -456,10 +472,78 @@ func remove_world_item_at(position: Vector2i):
 
 
 func _on_button_2_pressed():
+	print("ACTION BUTTON PRESSED")
 	action_button_pressed = true
 	
 	
 func get_equipped_item() -> String:
 	if equipped >= 0 and equipped < inventory.size():
-		return inventory[equipped]
+		return inventory_array[equipped]
 	return ""
+
+
+func add_item_to_inventory(item: String):
+	if item not in inventory:
+		inventory[item] = 0
+		inventory_array.append(item)
+	inventory[item] += 1
+	
+
+
+func remove_item_from_inventory(item: String):
+	if item not in inventory:
+		return
+	inventory[item] -= 1
+	if inventory[item] < 1:		
+		# unequip item if it is currently equipped
+		var item_index = inventory_array.find(item)
+		if item_index != -1 and equipped == item_index:
+			equipped = -1
+		# erase item from inventory
+		inventory.erase(item)
+		inventory_array.erase(item)
+		return
+
+
+func inventory_menu_visible(is_visible: bool):
+	inventory_button_equip.visible = is_visible
+	inventory_button_left.visible = is_visible
+	inventory_button_right.visible = is_visible
+
+
+func _on_inventory_left_pressed():
+	if inventory_selection_index == 0:
+		print("CANNOT GO LEFT ANY FURTHER")
+		return
+	inventory_selection_index -= 1
+	update_inventory_button_equip()
+
+
+func _on_inventory_right_pressed():
+	if inventory_selection_index == inventory_array.size() - 1:
+		print("CANNOT GO RIGHT ANY FURTHER")
+		return
+	inventory_selection_index += 1
+	update_inventory_button_equip()
+
+
+func update_inventory_button_equip():
+	if inventory_array.size() < 1:
+		return
+	if equipped == inventory_selection_index:
+		inventory_button_equip.text = "Unequip " + inventory_array[inventory_selection_index]
+		return
+	inventory_button_equip.text = "Equip " + inventory_array[inventory_selection_index]
+
+
+func _on_inventory_equip_pressed():
+	assert(inventory_selection_index >= 0)
+	assert(inventory_selection_index < inventory_array.size())
+	if equipped == inventory_selection_index:
+		# unequip item
+		equipped = -1
+	else:
+		# equip item
+		equipped = inventory_selection_index
+	update_inventory_button_equip()
+	update_inventory()
