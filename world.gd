@@ -27,7 +27,7 @@ var player_pos: Vector2i
 var input_direction: Vector2i
 var world_map: Array
 var id = 0
-var metabots: Dictionary # id : [stage, position]
+var metabots: Dictionary # { id : [stage, position], etc }
 var state: State = State.IDLE
 var timer: Timer = null
 # var can_move: bool = true
@@ -81,6 +81,19 @@ func spawn_seed(location: Vector3i):
 	# TODO implement seed source as spaceship
 	var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable)
 	agent_world.add_entity(e_seed, location)
+	
+	# metabots plant potato at location
+	metabots[id] = [0, location]
+	var potato = metabot_simulator.plant_potato(id)
+	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
+	id += 1
+	
+	# Attach water resource
+	print("ATTACHING WATER RESOURCE TO SOIL")
+	var pool_water = Metabot.Pool.new("water", 100)
+	var pool_minerals = Metabot.Pool.new("minerals", 100)
+	potato.collector.add_source(pool_water)
+	potato.collector.add_source(pool_minerals)
 
 
 func spawn_tilled_soil(location: Vector3i):    
@@ -100,6 +113,9 @@ func spawn_tilled_soil(location: Vector3i):
 
 
 func load_world():
+	# Required to spawn potato metabot, which are used in spawn_seed()
+	initiate_metabots()
+	
 	var file_path = "res://world.txt"
 	var file = FileAccess.open(file_path, FileAccess.READ)
 	var y = 0
@@ -162,99 +178,12 @@ func _ready():
 	button2.text = "Use"
 	button2.hide()
 	
+
 	load_world()
 	initiate_timer()
 	inventory_menu_visible(false)
 	# TODO setup scenarios from data file (SQLite?)
 	# agent_world = AgentWorld.new(Vector3i(3, 4, 1))
-
-
-func test_metabots():
-	# metabots plant potat AT
-	metabots[id] = [0, Vector2i(20, 10)]
-	var potato = metabot_simulator.plant_potato(id)
-#	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
-	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
-	id += 1
-	
-	# metabots plant potat AT
-	metabots[id] = [0, Vector2i(40, 10)]
-	var potato2 = metabot_simulator.plant_potato(id)
-#	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
-	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
-	id += 1
-
-
-func test_entities_with_metabots():
-	metabots[id] = [0, Vector2i(20, 10)]
-	var potato = metabot_simulator.plant_potato(id)
-#	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
-	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
-	id += 1
-	
-	var placement:Array
-	var shareable_placement:Array
-	var nonshareable_placement:Array
-	var detectable:Array
-	var tags:Array
-	
-	placement = [
-		"seed",
-		"grounded",
-	]
-	# world layers which entities of type can share a world zone.
-	shareable_placement = [
-		"grounded",
-	]
-	# world layers which entities of type can NOT share a world zone.
-	nonshareable_placement = [
-		"seed", 
-	]
-	# which senses can detect this entity
-	detectable = [
-		"vision"
-	]
-	tags = [
-		"seed"
-	]
-	
-	# TODO implement seed source (as spaceship / headquarters?)
-	var e_seed_locations = [
-		Vector3i(1, 1, 0),
-	]
-	for location in e_seed_locations:
-		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable, tags)
-		agent_world.add_entity(e_seed, location)
-		
-	
-	placement = [
-		"soil",
-		"grounded",
-	]
-	# world layers which entities of type can share a world zone.
-	shareable_placement = [
-		"grounded",
-	]
-	# world layers which entities of type can NOT share a world zone.
-	nonshareable_placement = [
-		"soil", 
-	]
-	# which senses can detect this entity
-	detectable = [
-		"vision"
-	]
-	tags = [
-		"soil"
-	]
-	
-	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
-	# soil becomes a passthrough entity for plant metabots attached to it
-	# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
-	
-	
-# func initiate_agents():	
-# 	# TODO setup scenarios from data file (SQLite?)
-# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1))
 
 
 func on_new_soil(_self:AgentWorld.Entity):
@@ -271,7 +200,7 @@ func on_new_soil(_self:AgentWorld.Entity):
 
 
 func potato_life_stage_progressed(id, stage):
-	print("potato_life_stage_progressed: ", id, stage)
+	print("potato_life_stage_progressed id:", id, ", stage:", stage)
 	potato_stage = stage
 	metabots[id][0] = stage
  
@@ -352,12 +281,13 @@ func action_state():
 	state = State.DELAY
 	var item = get_equipped_item()
 	var location = Vector3i(player_pos[0], player_pos[1], 0)
-	# TODO: change get_world_item_at to agent_world.get_item_at()
-	if item == HOE and get_world_item_at(player_pos) == BLANK:
-		spawn_tilled_soil(location)
-		# set_world_item_at(player_pos, TILLED_SOIL)
-	# TODO: change get_world_item_at to agent_world.get_item_at()
-	elif item == SEED and get_world_item_at(player_pos) == TILLED_SOIL:		
+	var tilled_soil: Dictionary = agent_world.get_entities_of_type(["soil", "seed"], location)
+	print("TILLED SOIL DICT: ", tilled_soil)
+	if item == HOE and "soil" not in tilled_soil:
+		print("FOUND BLANK SPOT TO TILL SOIL!")
+		spawn_tilled_soil(location)	
+	elif item == SEED and "soil" in tilled_soil:
+		print("FOUND TILLED SOIL TO PLANT SEED!")
 		spawn_seed(location)
 	timer.set_wait_time(MOVE_DELAY)
 	timer.start()
@@ -372,12 +302,6 @@ func update_world():
 		player_marker.position.x = x * FONT_SIZE.x + FONT_OFFSET.x
 		player_marker.position.y = y * FONT_SIZE.y + FONT_OFFSET.y
 	
-	for id in metabots:
-		var pos = metabots[id][1]
-		var stage = metabots[id][0]
-		temp_world[pos[1]][pos[0]] = POTATO_STAGE[stage]
-	
-#	print(agent_world.entities)
 	var x2 = 0
 
 	# TODO: fix this. do not loop twice.
@@ -396,6 +320,12 @@ func update_world():
 		y = entity.center_point[1]
 		if entity.placement.has("android"):
 			temp_world[y][x] = ANDROID
+	
+	# ORDER MATTERS. The metabot life stages should be rendered on top of the others
+	for id in metabots:
+		var pos: Vector3i = metabots[id][1]
+		var stage: int = min(metabots[id][0], POTATO_STAGE.size() - 1)
+		temp_world[pos.y][pos.x] = POTATO_STAGE[stage]
 	
 	# Render player
 	x = player_pos[0]
