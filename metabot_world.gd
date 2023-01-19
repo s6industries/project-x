@@ -6,7 +6,7 @@ class_name MetabotWorld
 
 #const Metabot = preload("res://metabot.gd")
 var metabots = []
-var metabots_by_id: Dictionary # id : [stage, position]
+var metabots_by_id: Dictionary = {} # id : [stage, position]
 
 var timer: Timer = null
 var tick_interval = 1.0
@@ -54,7 +54,7 @@ func attach_pools_for_potato(potato:Metabot):
 	potato.collector.add_source(pool_minerals)
 
 
-func plant_potato(id: int):
+func plant_potato(id: String):
 	# TODO attach resource pools from the soil in which potato is planted
 	# var pool_water = Metabot.Pool.new("water", 0)
 	# pool_water.add(100)
@@ -68,16 +68,20 @@ func plant_potato(id: int):
 	# potato.collector.add_source(pool_minerals)
 
 	metabots.append(potato)
+	metabots_by_id[id] = potato
+
 	return potato
 
 
 func activate_potato(_self:Potato, environment):
-	pass
+	print("activate_potato")
 	# check if collector has enough minerals and water to start metabolism
 	if _self.collector.get_source_amount("water") >= 20 && _self.collector.get_source_amount("minerals") >= 20:
+		print("potato HAS enough resources to activate metabolism")
 		return true
-	
-	return false
+	else:
+		print("potato NOT enough resources to activate metabolism")
+		return false
 
 
 

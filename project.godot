@@ -44,6 +44,11 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://potato.gd"
 }, {
+"base": "RefCounted",
+"class": &"Scenario",
+"language": &"GDScript",
+"path": "res://scenario.gd"
+}, {
 "base": "Node",
 "class": &"TestClass",
 "language": &"GDScript",
@@ -67,6 +72,7 @@ _global_script_class_icons={
 "Metabot": "",
 "MetabotWorld": "",
 "Potato": "",
+"Scenario": "",
 "TestClass": "",
 "WorldGenerator": "",
 "WorldRenderer2Di": ""

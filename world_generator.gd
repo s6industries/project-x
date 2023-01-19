@@ -3,7 +3,7 @@
 class_name WorldGenerator extends Node
 
 var scenarios = []
-var active_scenario: Scenario
+# var active_scenario: Scenario
 
 const PLAYER = "@"
 const ANDROID = "A"
@@ -25,7 +25,7 @@ func _ready():
 # TODO setup scenarios from data file (SQLite?)
 
 
-func load_scenario_from_txt_map(file_path: String, world_renderer: WorldRenderer2Di):
+func load_scenario_from_txt_map(file_path: String, world_renderer, scenario):
 
 	var player_pos: Vector2i
 	var world_map = []
@@ -53,9 +53,10 @@ func load_scenario_from_txt_map(file_path: String, world_renderer: WorldRenderer
 	print(world_map)
 	
 	# setup scenario instance
-	var scenario = Scenario.new(world_renderer)
+	# var scenario = Scenario.new(world_renderer)
 	var metabot_world = MetabotWorld.new(false)
 	var agent_world = AgentWorld.new(Vector3i(num_cols, num_rows, 1), false)
+	agent_world.metabot_world = metabot_world
 			
 	scenario.world.metabot_world = metabot_world
 	scenario.world.agent_world = agent_world
@@ -133,22 +134,72 @@ class Timekeeper extends Node:
 		agent_world.tick()
 
 	
-# the game world + configuration for a play session
-# can be created from saved data (CSV, SQL)
-class Scenario:
+# # the game world + configuration for a play session
+# # can be created from saved data (CSV, SQL)
+# class Scenario:
 
-	var world: World2Di
-	var world_renderer: WorldRenderer2Di
+# 	var world: World2Di
+# 	var world_renderer: WorldRenderer2Di
 
-	var timekeeper: Timekeeper
-	var auto_tick = false
+# 	var timekeeper: Timekeeper
+# 	var auto_tick = false
 
-	func _init(_world_renderer: WorldRenderer2Di):
-		print("init Scenaroi")
-		world = World2Di.new()
-		world_renderer = _world_renderer
-		pass
+# 	func _init(_world_renderer: WorldRenderer2Di):
+# 		print("init Scenaroi")
+# 		world = World2Di.new()
+# 		world_renderer = _world_renderer
+# 		pass
 
+# 	func run():
+# 		pass
+
+
+# func test_metabots():
+
+# 	# var agent_world = AgentWorld.new(Vector3i(num_cols, num_rows, 1), true)
+# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1), true)
+
+# 	# metabots plant potat AT
+# 	metabots[id] = [0, Vector2i(20, 10)]
+# 	var potato = metabot_world.plant_potato(id)
+# 	attach_pools_for_potato(potato)
+
+# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+# 	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
+# 	id += 1
+	
+# 	# metabots plant potat AT
+# 	metabots[id] = [0, Vector2i(40, 10)]
+# 	var potato2 = metabot_world.plant_potato(id)
+# 	attach_pools_for_potato(potato2)
+
+# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+# 	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
+# 	id += 1
+
+
+# func test_entities_with_metabots():
+# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1), true)
+# 	agent_world.metabot_world = metabot_world
+
+# 	# TODO implement seed source (as spaceship / headquarters?)
+# 	var e_seed_locations = [
+# 		Vector3i(1, 1, 0),
+# 	]
+# 	for location in e_seed_locations:
+# 		spawn_seed(location)
+
+# 	var e_soil_locations = [
+# 		Vector3i(1, 2, 0),
+# 	]
+# 	for location in e_soil_locations:
+# 		spawn_tilled_soil(location)
+	
+# 	var e_android_locations = [
+# 		Vector3i(1, 3, 0),
+# 	]
+# 	for location in e_soil_locations:
+# 		spawn_android(location)
 
 
 # World2Di tracks all entities sharing a physical 2D space & time
@@ -226,11 +277,11 @@ class World2Di extends Node:
 		agent_world.add_entity(e_soil, location)
 	
 	
-	func spawn_potato(location: Vector3i):
-		metabots[id] = [0, Vector2i(20, 10)]
-		var potato = metabot_world.plant_potato(id)
-	#	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
-		potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
-		id += 1
-		pass
+	# func spawn_potato(location: Vector3i):
+	# 	metabots[id] = [0, Vector2i(20, 10)]
+	# 	var potato = metabot_world.plant_potato(id)
+	# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+	# 	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
+	# 	id += 1
+	# 	pass
 		

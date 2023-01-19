@@ -183,8 +183,9 @@ func resolve_action(entity, action_info, input = null):
 				print(input.tags)
 				# TODO attach to soil the seed entity (which is the result of previous detach body action)
 				# TODO when the seed is attached to soil, activate the seed's metabolism
-
-				var mbot_potato = metabot_world.plant_potato(1)
+				
+				var mbot_id = uuid_util.v4()
+				var mbot_potato = metabot_world.plant_potato(mbot_id)
 				seed.attach_metabot(mbot_potato)
 
 				# TODO attach soil's resource pools to seed

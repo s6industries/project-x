@@ -48,7 +48,7 @@ var id = null
 
 var body_mass = 0
 
-func _init(temp_id: int):
+func _init(temp_id: String):
 	id = temp_id
 	print("Metabot")
 	
@@ -79,17 +79,18 @@ func auto_activate(_self, environment):
 
 func check_active(environment):
 	if func_activate:
-		if func_activate.call_func(self, environment):
+		if func_activate.call(self, environment):
 			is_active = true
-	return false
+	return is_active
 
 
 # 1 tick = 1 hour, game time
 # 1 day, game time = 24 ticks
 func tick():
-	check_active(environment)
 	if not is_active:
-		return 
+		check_active(environment)
+		if not is_active:
+			return 
 		
 	for component in components:
 		component.tick()
@@ -114,15 +115,11 @@ func check_life_stage():
 
 
 func report_status():
-	var log = "species: %s, instance: %f, life_stage: %f"
-	print(log % [species, species_instance_id, life_stage])
-	
-	log = "collector: pool count: %f"
-	print(log % [collector.pool.count])
-	
+	var log = "species: %s, instance: %f, life_stage: %f, body_mass: %f"
+	print(log % [species, species_instance_id, life_stage, body_mass])
+
 	for c in collector.collections:
-		log = "collection %s count: %f"
-		print(log % [c, collector.collections[c]])
+		print("collection %s count: %f" % [c, collector.collections[c]])
 # sensor
 #agent 
 #actuator

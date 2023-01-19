@@ -12,7 +12,7 @@ func _process(delta):
 	pass
 
 
-func _init(id: int):
+func _init(id: String):
 	super._init(id)
 	
 	species = "potato"
@@ -47,7 +47,7 @@ func _init(id: int):
 	composer.bodypart_templates = {
 		"root": {
 			"name": "root",
-			"mass": 1.0,
+			"mass": 3.0,
 			"layer": "underground"
 		}
 	}
