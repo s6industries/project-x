@@ -36,6 +36,8 @@ class Tester:
 		return scenario
 
 
+# START TESTS
+
 
 class TestScenarioAndroid extends Scenario:
 
@@ -45,34 +47,50 @@ class TestScenarioAndroid extends Scenario:
 
 	func run():
 		print("TestScenarioAndroid run")
-		var tick_limit = 4 
-		# at 4 ticks, the android has planted the potato seed in the tilled soil
+		var tick_limit = 0
+
+		# the android has planted the potato seed in the tilled soil
 		# the seed entity has been attached to the soil entity
 		# on attach to soil, the resource pools of the soil are connected to the 
 		# seed's metabot
 		# on connect resource pools to seed's metabot, check if the resource requirement met
 		# to acticate the seed's metabolism 
 		# on next metabot tick, the seed should pull resources and grow
-
+		tick_limit = 4
 		for t in tick_limit:
 			print(">>>> test agent_world tick # %f" % t)
 			world.agent_world.tick()
-			
-		tick_limit = 6
 		
+		# the potato has grown and its morphology has changed
+		tick_limit = 6
 		for t in tick_limit:
 			print(">>>> test metabot_world tick # %f" % t)
 			world.metabot_world.tick()
+		
+		# the android perceives the updated morphology of potato as ready for harvest
+		# >>> all_sensor_data for vision:
+		# >>> [{ "loc": (36, 13, 0), "data": ["soil", "grounded", {  }, "seed", "grounded", { "height": 1, "symbol": "potato" }] }]
+		# the android grabs the potato
+		world.agent_world.tick()
+		
+		# with the potato collected in backpack, the android sets destination for HQ 
+		# deposting harvest at HQ is the second part to goal harvesting
+		world.agent_world.tick()
 
+		# tick_limit = 1
+		# for t in tick_limit:
+		# 	print(">>>> test agent_world tick # %f" % t)
+		# 	world.agent_world.tick()
 
-# START TESTS
+		pass
 
-	# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
-	# soil becomes a passthrough entity for plant metabots attached to it
-	# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
 
 # END TESTS
 
+
+# on soil created, it should have pools of water and minerals that plants buried in it will use to grow
+# soil becomes a passthrough entity for plant metabots attached to it
+# water and minerals added to soil, its pools increase, the attached seed passes to the plant metabot
 
 # func on_new_soil(_self:AgentWorld.Entity):
 # 	pass

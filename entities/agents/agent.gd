@@ -64,10 +64,11 @@ var goals = [
 	["explore", [], []],
 	["collect", ["seed", 1], []],
 	["plant", ["seed", 1], []],
-	["harvest", ["potato", 1], []]
+	["harvest", ["potato", 1], []],
+	["deposit", ["potato", "all"], []],
 ]
 var goals_prioritized = [
-	2, 3, 4, 1, 0
+	2, 3, 4, 5
 ]
 var active_goal = null
 
@@ -144,8 +145,14 @@ func create_input(goal):
 				print("entity is at goal. %s" % [input])
 		
 		"harvest":
-			pass
 			# check if any visible potatoes are ready for harvest
+			var delta_vector:Vector3i = get_delta_to_goal(entity.center_point, goal_target)
+			
+			if delta_vector.length() >= 1:
+				input = create_input_move_to_goal(delta_vector)
+			else:
+				input = "harvest_here"
+				print("entity is at goal. %s" % [input])
 			
 		
 	if input != null:
@@ -222,7 +229,16 @@ func check_goal_completed(goal):
 			var goal_amount = target_info[1]
 			print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
 			is_goal_completed = current_amount >= goal_amount
-			
+		
+		# ex. ["harvest", ["potato", 1], [(36, 13, 0)]]
+		"harvest":
+			var target_type = target_info[0]
+			var current_amount = get_attachments("backpack", "potato").size()
+			var goal_amount = target_info[1]
+			print("%s target %s: %d of %d" % [goal_type, target_type, current_amount, goal_amount])
+			is_goal_completed = current_amount >= goal_amount
+
+
 		# ex. ["plant", ["seed", 1], []],
 		"plant":
 			var target_type = target_info[0]
@@ -355,6 +371,16 @@ func set_goal(goal):
 			pass
 			# look at all potatoes
 			# check morphology if ready for harvest
+			var target = "potato"
+			var sensor_type_data = "vision"
+			# zones with entities were detected per sensor type in sense_world()
+			var zones_with_entities = model_state["sensor_data"][sensor_type_data]
+			for zone in zones_with_entities:
+				if target in zone["data"]:
+					var location = zone["loc"]
+					# prevent duplicate locations
+					if location not in goal_targets:
+						goal_targets.append(location)
 			
 	if goal_targets.size() > 0:
 		print("goal '%s' has possible targets: %d" % [goal_type, goal_targets.size()])
@@ -443,6 +469,9 @@ func create_command(input):
 		# put item in inventory
 		"collect_here":
 			command = ["collect","world","local", 1.0]
+
+		"harvest_here":
+			command = ["harvest","world","local", 1.0]
 		
 		"plant_here":
 			command = ["plant","world","local", 1.0]
@@ -506,6 +535,9 @@ func send_impulse(command):
 		"collect":
 			impulse = ["hands","grab",Vector2.ZERO]
 		
+		"harvest":
+			impulse = ["hands","harvest",Vector2.ZERO]
+		
 		"plant":
 			impulse = ["hands","bury",Vector2.ZERO]
 			
@@ -521,10 +553,12 @@ func execute_action(impulse):
 	var bodypart = impulse[0]
 	
 	match bodypart:
+		
 		"legs":	
 			var vector = impulse[1]
 			var magnitude = impulse[2]
 			action = ["translate_body", vector * magnitude ]
+		
 		"hands":
 			var action_method = impulse[1]
 			var relative_location = impulse[2]
@@ -534,8 +568,20 @@ func execute_action(impulse):
 		#			var attach_node = bodypart
 					var attach_node = "backpack"
 					var attach_method = action_method
-					var attach_target = ["any", "seed", "potato"]
+					var attach_target = ["any", "seed"]
 					action = ["attach_body", attach_target, attach_node, attach_method, relative_location]
+				
+				"harvest":
+					var attach_node = "backpack"
+					var attach_method = action_method
+					var attach_target = ["potato"]
+					action = {
+							"steps":[
+								["attach_body", attach_target, attach_node, attach_method, relative_location],
+								["remember", "harvest", "potato"]
+							]
+						}
+				
 				"bury":
 					# detach item from inventory
 					var detach_node = "backpack"

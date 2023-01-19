@@ -33,14 +33,12 @@ var state: State = State.IDLE
 var timer: Timer = null
 # var can_move: bool = true
 
-# var metabot_world
 var potato_stage: int
 var diagonal_moving_toggle: bool = false
 var inventory: Array = Array()
 var equipped: int = -1
 var action_button_pressed = false
 
-#const MetabotWorld = preload("res://metabot_world.gd")
 var agent_world:AgentWorld
 var metabot_world:MetabotWorld
 
@@ -82,7 +80,6 @@ func _ready():
 		metabot_world = scenario.world.metabot_world
 		agent_world = scenario.world.agent_world
 
-		# add_child(world_generator)
 		add_child(scenario.world.metabot_world)
 		add_child(scenario.world.agent_world)
 

@@ -145,13 +145,26 @@ func resolve_action(entity, action_info, input = null):
 			var grab_target_types = action_info[1]
 			var entity_attach_node = action_info[2]
 			var world_location = Vector3i(entity.center_point) + Vector3i()
-			var grabbed = grab_at_location(world_location, grab_target_types, entity_attach_node)
-			if grabbed:
-				print("grabbed %s" % [grabbed])
-				grabbed = get_entity_by_id(grabbed)
-				place_entity(grabbed, world_location, false)
-				entity.agent.attach_entity(grabbed, entity_attach_node)
+			var all_grabbed = grab_at_location(world_location, grab_target_types, entity_attach_node)
+			
+			if all_grabbed.size() > 0:
+				for grabbed in all_grabbed:
+					print("grabbed entity %s" % [grabbed])
+					grabbed = get_entity_by_id(grabbed)
+					print(grabbed.tags)
+					place_entity(grabbed, world_location, false)
+					entity.agent.attach_entity(grabbed, entity_attach_node)
+				
 				print(entity.agent.model_state)
+
+			# var grabbed = grab_at_location(world_location, grab_target_types, entity_attach_node)
+			# if grabbed:
+			# 	print("grabbed entity %s" % [grabbed])
+			# 	grabbed = get_entity_by_id(grabbed)
+			# 	print(grabbed.tags)
+			# 	place_entity(grabbed, world_location, false)
+			# 	entity.agent.attach_entity(grabbed, entity_attach_node)
+			# 	print(entity.agent.model_state)
 		
 		# ex. ["detach_body", ["seed"], "backpack", "bury", (0, 0)]
 		"detach_body":
@@ -276,13 +289,18 @@ func get_entities_of_type(entity_types, world_point:Vector3i):
 
 
 func grab_at_location(location:Vector3, grab_targets, grabber):
-	var grabbed = null
+	var grabbed = []
 	# check if there is an entity at location
 	# is entity type of grab_target
 	# if grab_target can be grabbed by grabber
 	var found_entities = get_entities_of_type(grab_targets, location)
-	if found_entities["seed"]:
-		grabbed = found_entities["seed"][0]
+	
+	for target in grab_targets:
+		if target in found_entities:
+			grabbed.append_array(found_entities[target])
+
+	# if found_entities["seed"]:
+	# 	grabbed = found_entities["seed"][0]
 		
 	return grabbed
 
@@ -407,13 +425,16 @@ func check_coordinate_with_sensor(sensor_type, sensor_mods, x, y, z, ignored_ent
 	var coordinate_data = coordinates[z][y][x]
 	# print("checking coordinate %d, %d, %d" % [x, y, z])
 	# print(coordinate_data)
-#	sensor_data.append_array(coordinate_data)
+	#	sensor_data.append_array(coordinate_data)
 	for entity_id in coordinate_data:
 		if entities_by_id.has(entity_id) and entity_id not in ignored_entities:
 			var entity:Entity = entities_by_id[entity_id]
 			if entity.detectable.has(sensor_type):
 				print("entity ID %s sensed by %s" % [entity_id, sensor_type])
+				# TODO clarify how sensors detect morphology
 				sensor_data.append_array(entity.placement)
+				sensor_data.append(entity.morphology)
+		
 	
 	return sensor_data
 
@@ -507,11 +528,25 @@ class Entity:
 
 	func attach_metabot(_metabot): 
 		print("attach_metabot")
+		# watch for morphology changes
+		_metabot.connect("body_changed", self.on_change_body)
+		metabot = _metabot
 		pass
 
-
+	# signal propagating from Metabot on_bodyparts_added(bodyparts)
 	# when metabot body changes, update the morphology presented to the environment/agents by the entity
-	func on_change_body(_body):
+	func on_change_body(_bodymass, _body):
+		print("on_change_body", _bodymass, _body)
+
+		# TODO implement morphology changes in the species' class definition
+		# morphology change for potato
+		if (_bodymass >= 3):
+			morphology["height"] = _bodymass / 3
+			morphology["symbol"] = "potato"
+
+			placement.append_array(["plant", "potato"])
+		
+		print(morphology)
 		pass
 
 
