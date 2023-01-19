@@ -2,18 +2,19 @@ extends Node
 
 # https://docs.godotengine.org/en/latest/tutorials/scripting/gdscript/gdscript_documentation_comments.html
 
-class_name MetabotSimulator
+class_name MetabotWorld
 
 #const Metabot = preload("res://metabot.gd")
+var metabots = []
+var metabots_by_id: Dictionary # id : [stage, position]
 
 var timer: Timer = null
-var metabots = []
 var tick_interval = 1.0
 var timer_autostart: bool
 
 
 func _init(_timer_autostart: bool):
-	print("MetabotSimulator")
+	print("MetabotWorld")
 	timer_autostart = _timer_autostart
 
 
@@ -38,23 +39,33 @@ func initiate_timer():
 	timer.start(tick_interval)
 	
 func tick():
-	print("TICK MetabotSimulator")
+	print("TICK MetabotWorld")
 	for mbot in metabots:
 		mbot.tick()
 	
 
-func plant_potato(id: int):
-	# Plant a potato
+func attach_pools_for_potato(potato:Metabot):
 	var pool_water = Metabot.Pool.new("water", 0)
 	pool_water.add(100)
 	var pool_minerals = Metabot.Pool.new("minerals", 0)
 	pool_minerals.add(100)
 
+	potato.collector.add_source(pool_water)
+	potato.collector.add_source(pool_minerals)
+
+
+func plant_potato(id: int):
+	# TODO attach resource pools from the soil in which potato is planted
+	# var pool_water = Metabot.Pool.new("water", 0)
+	# pool_water.add(100)
+	# var pool_minerals = Metabot.Pool.new("minerals", 0)
+	# pool_minerals.add(100)
+
 	var potato = Potato.new(id)
 	potato.func_activate = Callable(self, "activate_potato")
 
-	potato.collector.add_source(pool_water)
-	potato.collector.add_source(pool_minerals)
+	# potato.collector.add_source(pool_water)
+	# potato.collector.add_source(pool_minerals)
 
 	metabots.append(potato)
 	return potato

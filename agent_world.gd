@@ -17,6 +17,8 @@ var timer:Timer
 var tick_interval:float
 var autostart_timer: bool
 
+var metabot_world:MetabotWorld
+
 
 static func generate_coordinates(_z, _y, _x):
 	var coordinates = []
@@ -60,9 +62,8 @@ func _ready():
 		print("must manually initiate_timer() or tick()")
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# Called every rendered frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	
 	pass	
 
 
@@ -77,7 +78,12 @@ func initiate_timer():
 
 func tick():
 	print("tick AgentWorld")
-	var actions_in_environment = []
+	var actions_from_agents = queue_actions_from_agents()
+	execute_actions_in_queue(actions_from_agents)
+	
+
+func queue_actions_from_agents():
+	var actions_from_agents = []
 	for agent in agents:
 		var action_in_environment = agent.tick()
 		if action_in_environment:
@@ -85,14 +91,17 @@ func tick():
 				agent.entity.id,
 				action_in_environment,
 			]
-			actions_in_environment.append(action_for_agent)
-	print(actions_in_environment)
-	
-	# all actions from agents are queued, now proceed to resolve them and mutate all entities 
-	# before agents next gather data from their environment 
-	# ex. ["android_AI", ["translate_body", (0, -1)]]
-	# ex. ["android_AI", ["attach_body", ["any", "seed", "potato"], "backpack", "grab", (0, 0)]] 
-	for action_queued in actions_in_environment:
+			actions_from_agents.append(action_for_agent)
+	print(actions_from_agents)
+
+	return actions_from_agents
+
+# all actions from agents are queued, now proceed to resolve them and mutate all entities 
+# before agents next gather data from their environment 
+# ex. ["android_AI", ["translate_body", (0, -1)]]
+# ex. ["android_AI", ["attach_body", ["any", "seed", "potato"], "backpack", "grab", (0, 0)]] 
+func execute_actions_in_queue(actions_from_agents):
+	for action_queued in actions_from_agents:
 		var entity_id = action_queued[0]
 		var action_info =  action_queued[1]
 		var entity:Entity = get_entity_by_id(entity_id)
@@ -174,6 +183,12 @@ func resolve_action(entity, action_info, input = null):
 				print(input.tags)
 				# TODO attach to soil the seed entity (which is the result of previous detach body action)
 				# TODO when the seed is attached to soil, activate the seed's metabolism
+
+				var mbot_potato = metabot_world.plant_potato(1)
+				seed.attach_metabot(mbot_potato)
+
+				# TODO attach soil's resource pools to seed
+				metabot_world.attach_pools_for_potato(mbot_potato)
 			
 		
 		# ex. ["remember", "plant", "seed"]

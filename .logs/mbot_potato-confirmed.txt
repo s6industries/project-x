@@ -2,7 +2,7 @@
 Godot Engine v4.0.beta9.official.e780dc332 - https://godotengine.org
 Vulkan API 1.2.231 - Using Vulkan Device #0: Apple - Apple M1 Pro
  
-MetabotSimulator
+MetabotWorld
 _ready
 mCollector
 Recipe

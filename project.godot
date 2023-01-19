@@ -35,9 +35,9 @@ _global_script_classes=[{
 "path": "res://metabot.gd"
 }, {
 "base": "Node",
-"class": &"MetabotSimulator",
+"class": &"MetabotWorld",
 "language": &"GDScript",
-"path": "res://metabot_simulator.gd"
+"path": "res://metabot_world.gd"
 }, {
 "base": "Metabot",
 "class": &"Potato",
@@ -48,6 +48,16 @@ _global_script_classes=[{
 "class": &"TestClass",
 "language": &"GDScript",
 "path": "res://test_class.gd"
+}, {
+"base": "Node",
+"class": &"WorldGenerator",
+"language": &"GDScript",
+"path": "res://world_generator.gd"
+}, {
+"base": "Node2D",
+"class": &"WorldRenderer2Di",
+"language": &"GDScript",
+"path": "res://world.gd"
 }]
 _global_script_class_icons={
 "Agent": "",
@@ -55,9 +65,11 @@ _global_script_class_icons={
 "Entities": "",
 "Joystick": "",
 "Metabot": "",
-"MetabotSimulator": "",
+"MetabotWorld": "",
 "Potato": "",
-"TestClass": ""
+"TestClass": "",
+"WorldGenerator": "",
+"WorldRenderer2Di": ""
 }
 
 [application]
