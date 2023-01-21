@@ -55,6 +55,15 @@ func activate_potato(_self:Potato, environment):
 	return false
 
 
+func harvest_potato(id: int) -> bool:
+	for potato in metabots:
+		if potato.id == id:
+			metabots.erase(potato)
+			potato.queue_free()
+			return true
+	return false
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass

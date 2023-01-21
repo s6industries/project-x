@@ -87,9 +87,10 @@ func check_active(environment):
 # 1 tick = 1 hour, game time
 # 1 day, game time = 24 ticks
 func tick():
-	check_active(environment)
-	if not is_active:
-		return 
+	# TODO: need to reinvestigate this feature
+#	check_active(environment)
+#	if not is_active:
+#		return 
 		
 	for component in components:
 		component.tick()
@@ -106,6 +107,7 @@ func check_life_stage():
 		# print("bodypart: %s" % part["name"])
 	
 	# print("body mass: %f" % body_mass)
+	life_stage = min(life_stage, life_stage_progression.size() - 1)
 	if body_mass >= life_stage_progression[life_stage]:
 		life_stage += 1
 		print(">>> !!! life_stage progressed to %f !!!" % life_stage)

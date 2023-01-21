@@ -4,13 +4,16 @@
 [ext_resource type="Script" path="res://world.gd" id="1_08pvc"]
 [ext_resource type="PackedScene" uid="uid://ckk0xa2w80n7a" path="res://joystick/joystick.tscn" id="3_0f2o7"]
 
-[node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "inventory_label", "player_marker", "button", "button2")]
+[node name="World" type="Node2D" node_paths=PackedStringArray("world_label", "inventory_label", "player_marker", "button", "button2", "inventory_button_left", "inventory_button_right", "inventory_button_equip")]
 script = ExtResource("1_08pvc")
 world_label = NodePath("WorldLabel")
 inventory_label = NodePath("CanvasLayer/InventoryLabel")
 player_marker = NodePath("PlayerPosition")
 button = NodePath("CanvasLayer/Button")
 button2 = NodePath("CanvasLayer/Button2")
+inventory_button_left = NodePath("CanvasLayer/InventoryLeft")
+inventory_button_right = NodePath("CanvasLayer/InventoryRight")
+inventory_button_equip = NodePath("CanvasLayer/InventoryEquip")
 
 [node name="WorldLabel" type="Label" parent="."]
 offset_right = 432.0
@@ -86,5 +89,43 @@ grow_vertical = 2
 offset_right = 40.0
 offset_bottom = 23.0
 
+[node name="InventoryLeft" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = 35.0
+offset_right = 50.0
+offset_bottom = 85.0
+grow_vertical = 2
+text = "<"
+
+[node name="InventoryRight" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 308.0
+offset_top = 40.0
+offset_right = 358.0
+offset_bottom = 90.0
+grow_vertical = 2
+text = ">"
+
+[node name="InventoryEquip" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(200, 50)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 77.0
+offset_top = 39.0
+offset_right = 277.0
+offset_bottom = 89.0
+grow_vertical = 2
+text = "equip item"
+
 [connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/InventoryLeft" to="." method="_on_inventory_left_pressed"]
+[connection signal="pressed" from="CanvasLayer/InventoryRight" to="." method="_on_inventory_right_pressed"]
+[connection signal="pressed" from="CanvasLayer/InventoryEquip" to="." method="_on_inventory_equip_pressed"]
