@@ -113,8 +113,7 @@ func spawn_tilled_soil(location: Vector3i):
 
 
 func load_world():
-	# Required to spawn potato metabot, which are used in spawn_seed()
-	initiate_metabots()
+	
 	
 	var file_path = "res://world.txt"
 	var file = FileAccess.open(file_path, FileAccess.READ)
@@ -132,32 +131,34 @@ func load_world():
 		# Replace player with blank space bc player gets rendered separately
 		world_map.append(line)
 		y += 1
+	
 	print(world_map)
-	## CHECKPOINT
 	var num_rows = world_map.size()
 	var num_cols = world_map[0].length()
 	
-	# Instantiate Agent World
 	agent_world = AgentWorld.new(Vector3i(num_cols, num_rows, 1))
-	# Spawn the entities
-	for y2 in range(num_rows):
-		for x2 in range(num_cols):
-			# print("x2, y2: ", x2, " ", y2)
-			var new_location = Vector3i(x2, y2, 0)
-#			print( world_map[y2], " ", typeof( world_map[y2]))
-#			print(world_map[y2][x2])
-			if world_map[y2][x2] == ANDROID:
-				spawn_android(new_location)
-				world_map[y2][x2] = " "
-			elif world_map[y2][x2] == TILLED_SOIL:
-				spawn_tilled_soil(new_location)
-				world_map[y2][x2] = " "
-			elif world_map[y2][x2] == SEED:
-				spawn_seed(new_location)
-				world_map[y2][x2] = " "
-	# func initiate_agents():
-	# TODO setup scenarios from data file (SQLite?)
+	inititate_entities(num_rows, num_cols)
 	add_child(agent_world)
+
+
+func inititate_entities(rows, cols):
+	# Required to spawn potato metabot, which are used in spawn_seed()
+	metabot_simulator = MetabotSimulator.new()
+	add_child(metabot_simulator)
+
+	# Spawn entities from world map
+	for y in range(rows):
+		for x in range(cols):
+			var new_location = Vector3i(x, y, 0)
+			if world_map[y][x] == ANDROID:
+				spawn_android(new_location)
+				world_map[y][x] = " "
+			elif world_map[y][x] == TILLED_SOIL:
+				spawn_tilled_soil(new_location)
+				world_map[y][x] = " "
+			elif world_map[y][x] == SEED:
+				spawn_seed(new_location)
+				world_map[y][x] = " "
 
 
 func initiate_timer():
@@ -166,10 +167,6 @@ func initiate_timer():
 	timer.connect("timeout", self.animation_completed)
 	add_child(timer)
 
-
-func initiate_metabots():
-	metabot_simulator = MetabotSimulator.new()
-	add_child(metabot_simulator)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -302,24 +299,17 @@ func update_world():
 		player_marker.position.x = x * FONT_SIZE.x + FONT_OFFSET.x
 		player_marker.position.y = y * FONT_SIZE.y + FONT_OFFSET.y
 	
-	var x2 = 0
-
-	# TODO: fix this. do not loop twice.
+	var android_location: Vector3i
 	for entity in agent_world.entities:
-#		print("placement", entity.placement)
 		x = entity.center_point[0]
 		y = entity.center_point[1]
 		if entity.placement.has("seed"):
 			temp_world[y][x] = SEED
-		elif entity.placement.has("soil"):
+		if entity.placement.has("soil"):
 			temp_world[y][x] = TILLED_SOIL
-
-	for entity in agent_world.entities:
-#		print("placement", entity.placement)
-		x = entity.center_point[0]
-		y = entity.center_point[1]
 		if entity.placement.has("android"):
-			temp_world[y][x] = ANDROID
+			# Save android location to render on top of metabots below
+			android_location = entity.center_point			
 	
 	# ORDER MATTERS. The metabot life stages should be rendered on top of the others
 	for id in metabots:
@@ -327,6 +317,9 @@ func update_world():
 		var stage: int = min(metabots[id][0], POTATO_STAGE.size() - 1)
 		temp_world[pos.y][pos.x] = POTATO_STAGE[stage]
 	
+	# Render Android
+	temp_world[android_location.y][android_location.x] = ANDROID
+
 	# Render player
 	x = player_pos[0]
 	y = player_pos[1]
