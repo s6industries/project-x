@@ -17,7 +17,8 @@ const HOE = "h"
 const BLANK = " "
 const TILLED_SOIL = "="
 const SHIP = "S"
-const POTATO_STAGE = [".", ";", "i", "P"]
+const POTATO = "P"
+const POTATO_STAGE = [".", ";", "i", POTATO]
 const SEED = "."
 const MOVE_DELAY = 0.12
 const WORLD_TICK = 1.0
@@ -25,6 +26,7 @@ const FONT_OFFSET = Vector2i(3, 4)
 const FONT_SIZE = Vector2i(6, 14)
 const MAX_HEALTH = 100
 const MAX_SATIATION = 100
+const ANDROID_POTATOES_REQUIRED = 5
 
 var player_pos: Vector2i
 var input_direction: Vector2i
@@ -45,7 +47,8 @@ var action_button_pressed = false
 var inventory_selection_index = 0
 var hunger = MAX_SATIATION
 var health = MAX_HEALTH
-
+var ship_inventory: Dictionary = Dictionary()
+var button2_text_override: String = ""
 
 #const MetabotSimulator = preload("res://metabot_simulator.gd")
 var agent_world:AgentWorld
@@ -269,6 +272,9 @@ func observe_surroundings():
 	if position == SHIP:
 		button.text = "Get seeds"
 		button.show()
+		button2_text_override = ""
+		if POTATO == get_equipped_item():
+			button2_text_override = "Create potato powder formula"			
 		return
 	
 	var player_pos3i = Vector3i(x, y, 0)
@@ -299,21 +305,33 @@ func action_state():
 		return
 	state = State.DELAY
 	var item = get_equipped_item()
-	var location = Vector3i(player_pos[0], player_pos[1], 0)
-	var tilled_soil: Dictionary = agent_world.get_entities_of_type(["soil", "seed"], location)
-	print("TILLED SOIL DICT: ", tilled_soil)
-	if item == HOE and "soil" not in tilled_soil:
-		print("FOUND BLANK SPOT TO TILL SOIL!")
-		spawn_tilled_soil(location)	
-	elif item == SEED and "soil" in tilled_soil:
-		print("FOUND TILLED SOIL TO PLANT SEED!")
-		spawn_seed(location)
-		remove_item_from_inventory(SEED)
-	elif item == POTATO_STAGE[POTATO_STAGE.size() - 1]:		
-		remove_item_from_inventory(item)
-		health = min(health + 10, MAX_HEALTH)
-		hunger = MAX_SATIATION
-		print("EATING POTATO. Health: ", health, " Hunger: ", hunger)
+	# Chceck if player is in ship and player has potato
+	var position = world_map[player_pos.y][player_pos.x]
+	if position == SHIP and POTATO in inventory:
+		# Create potato powder formula. Store them as potatoes
+		if POTATO not in ship_inventory:
+			ship_inventory[POTATO] = 0
+		ship_inventory[POTATO] += 1
+		if ship_inventory[POTATO] >= ANDROID_POTATOES_REQUIRED:
+			ship_inventory[POTATO] -= ANDROID_POTATOES_REQUIRED
+			var location = Vector3i(player_pos.x, player_pos.y, 0)
+			spawn_android(location)
+	else:	
+		var location = Vector3i(player_pos[0], player_pos[1], 0)
+		var tilled_soil: Dictionary = agent_world.get_entities_of_type(["soil", "seed"], location)
+		print("TILLED SOIL DICT: ", tilled_soil)
+		if item == HOE and "soil" not in tilled_soil:
+			print("FOUND BLANK SPOT TO TILL SOIL!")
+			spawn_tilled_soil(location)	
+		elif item == SEED and "soil" in tilled_soil:
+			print("FOUND TILLED SOIL TO PLANT SEED!")
+			spawn_seed(location)
+			remove_item_from_inventory(SEED)
+		elif item == POTATO:
+			remove_item_from_inventory(item)
+			health = min(health + 10, MAX_HEALTH)
+			hunger = MAX_SATIATION
+			print("EATING POTATO. Health: ", health, " Hunger: ", hunger)
 	timer.set_wait_time(MOVE_DELAY)
 	timer.start()
 
@@ -383,6 +401,8 @@ func update_inventory():
 		return
 	# If equipped
 	button2.text = "Use " + inventory_array[equipped]
+	if not button2_text_override.is_empty():
+		button2.text = button2_text_override
 	button2.show()
 	inventory_label.text += "\nEquipped: " + inventory_array[equipped]
 	update_inventory_button_equip()
@@ -428,7 +448,7 @@ func _on_button_pressed():
 		var pos: Vector3i = metabots[id][1]
 		var stage: int = min(metabots[id][0], POTATO_STAGE.size() - 1)
 		if player_pos3i == pos and stage == POTATO_STAGE.size() - 1:
-			item = POTATO_STAGE[POTATO_STAGE.size() - 1]			
+			item = POTATO
 			add_item_to_inventory(item)
 			metabot_simulator.harvest_potato(id)
 			metabots.erase(id)
