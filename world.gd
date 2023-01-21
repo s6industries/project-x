@@ -20,8 +20,11 @@ const SHIP = "S"
 const POTATO_STAGE = [".", ";", "i", "P"]
 const SEED = "."
 const MOVE_DELAY = 0.12
+const WORLD_TICK = 1.0
 const FONT_OFFSET = Vector2i(3, 4)
 const FONT_SIZE = Vector2i(6, 14)
+const MAX_HEALTH = 100
+const MAX_SATIATION = 100
 
 var player_pos: Vector2i
 var input_direction: Vector2i
@@ -30,7 +33,7 @@ var id = 0
 var metabots: Dictionary # { id : [stage, position], etc }
 var state: State = State.IDLE
 var timer: Timer = null
-# var can_move: bool = true
+var world_clock: Timer = null
 
 # var metabot_simulator
 var potato_stage: int
@@ -40,6 +43,9 @@ var inventory_array: Array = Array()
 var equipped: int = -1
 var action_button_pressed = false
 var inventory_selection_index = 0
+var hunger = MAX_SATIATION
+var health = MAX_HEALTH
+
 
 #const MetabotSimulator = preload("res://metabot_simulator.gd")
 var agent_world:AgentWorld
@@ -112,9 +118,7 @@ func spawn_tilled_soil(location: Vector3i):
 	agent_world.add_entity(e_soil, location)
 
 
-func load_world():
-	
-	
+func load_world():		
 	var file_path = "res://world.txt"
 	var file = FileAccess.open(file_path, FileAccess.READ)
 	var y = 0
@@ -161,11 +165,18 @@ func inititate_entities(rows, cols):
 				world_map[y][x] = " "
 
 
-func initiate_timer():
+func initiate_timers():
 	timer = Timer.new()
 	timer.set_one_shot(true)
 	timer.connect("timeout", self.animation_completed)
 	add_child(timer)
+
+	world_clock = Timer.new()
+	world_clock.set_one_shot(false)
+	world_clock.connect("timeout", self.world_ticked)
+	world_clock.set_wait_time(WORLD_TICK)	
+	add_child(world_clock)
+	world_clock.start()
 
 
 # Called when the node enters the scene tree for the first time.
@@ -177,7 +188,7 @@ func _ready():
 	
 
 	load_world()
-	initiate_timer()
+	initiate_timers()
 	inventory_menu_visible(false)
 	# TODO setup scenarios from data file (SQLite?)
 	# agent_world = AgentWorld.new(Vector3i(3, 4, 1))
@@ -254,11 +265,22 @@ func observe_surroundings():
 	if position == HOE:
 		button.text = "Pick up hoe"
 		button.show()
-	elif position == SHIP:
+		return
+	if position == SHIP:
 		button.text = "Get seeds"
 		button.show()
-	else:
-		button.hide()
+		return
+	
+	var player_pos3i = Vector3i(x, y, 0)
+	for id in metabots:
+		var pos: Vector3i = metabots[id][1]
+		var stage: int = min(metabots[id][0], POTATO_STAGE.size() - 1)
+		if player_pos3i == pos and stage == POTATO_STAGE.size() - 1:
+			button.text = "Pick up potato"
+			button.show()
+			return
+
+	button.hide()
 
 
 func moving_state():
@@ -286,6 +308,12 @@ func action_state():
 	elif item == SEED and "soil" in tilled_soil:
 		print("FOUND TILLED SOIL TO PLANT SEED!")
 		spawn_seed(location)
+		remove_item_from_inventory(SEED)
+	elif item == POTATO_STAGE[POTATO_STAGE.size() - 1]:		
+		remove_item_from_inventory(item)
+		health = min(health + 10, MAX_HEALTH)
+		hunger = MAX_SATIATION
+		print("EATING POTATO. Health: ", health, " Hunger: ", hunger)
 	timer.set_wait_time(MOVE_DELAY)
 	timer.start()
 
@@ -335,22 +363,29 @@ func update_world():
 
 
 func update_inventory():
+	# Hijacking the inventory label to include health and hunger
+	inventory_label.text = "Health: " + str(health) + ", Hunger: " + str(hunger)	
+	# Inventory empty
 	if inventory.size() == 0:
 		inventory_label.text = ""
+		inventory_menu_visible(false)
 		return
+	# Non-empty inventory
 	inventory_menu_visible(true)
-	var text: String = "Inventory: "
+	var text: String = "\nInventory: "
 	for item in inventory:
 		var count = inventory[item]
 		text += item + " x" + str(count) + ", "
-	inventory_label.text = text
+	inventory_label.text += text
+	# If no item equipped:
 	if equipped < 0 or equipped >= inventory_array.size():
 		button2.hide()
 		return
+	# If equipped
 	button2.text = "Use " + inventory_array[equipped]
 	button2.show()
 	inventory_label.text += "\nEquipped: " + inventory_array[equipped]
-	
+	update_inventory_button_equip()
 
 
 func move(direction: Vector2i):
@@ -369,15 +404,35 @@ func animation_completed():
 	state = State.IDLE
 
 
+func world_ticked():
+	print("WORLD TICKED")
+	hunger = max(hunger - 1, 0)
+	if hunger == 0:
+		health = max(health - 1, 0)
+
+
 func _on_button_pressed():
 	print("PICKUP BUTTON PRESSED")
 	var item = get_world_item_at(player_pos)
 	if item == HOE:
 		item = remove_world_item_at(player_pos)
 		add_item_to_inventory(item)
-	elif item == SHIP:
+		return
+	if item == SHIP:
 		item = SEED
-		add_item_to_inventory(item)	
+		add_item_to_inventory(item)
+		return
+	# Check if item is a metabot potato
+	var player_pos3i = Vector3i(player_pos.x, player_pos.y, 0)
+	for id in metabots:
+		var pos: Vector3i = metabots[id][1]
+		var stage: int = min(metabots[id][0], POTATO_STAGE.size() - 1)
+		if player_pos3i == pos and stage == POTATO_STAGE.size() - 1:
+			item = POTATO_STAGE[POTATO_STAGE.size() - 1]			
+			add_item_to_inventory(item)
+			metabot_simulator.harvest_potato(id)
+			metabots.erase(id)
+			return
 
 
 func get_world_item_at(position: Vector2i):
@@ -423,15 +478,18 @@ func remove_item_from_inventory(item: String):
 	if item not in inventory:
 		return
 	inventory[item] -= 1
-	if inventory[item] < 1:		
-		# unequip item if it is currently equipped
-		var item_index = inventory_array.find(item)
-		if item_index != -1 and equipped == item_index:
-			equipped = -1
-		# erase item from inventory
-		inventory.erase(item)
-		inventory_array.erase(item)
+	if inventory[item] > 0:
 		return
+	# Item quantity is 0. Delete item
+	# unequip item if it is currently equipped
+	var item_index = inventory_array.find(item)
+	if item_index != -1 and equipped == item_index:			
+		equipped = -1
+	# erase item from inventory
+	inventory.erase(item)
+	inventory_array.erase(item)
+	if inventory_selection_index >= inventory_array.size():
+		inventory_selection_index = inventory_array.size() - 1
 
 
 func inventory_menu_visible(is_visible: bool):
@@ -445,7 +503,7 @@ func _on_inventory_left_pressed():
 		print("CANNOT GO LEFT ANY FURTHER")
 		return
 	inventory_selection_index -= 1
-	update_inventory_button_equip()
+	# update_inventory_button_equip()
 
 
 func _on_inventory_right_pressed():
@@ -453,7 +511,7 @@ func _on_inventory_right_pressed():
 		print("CANNOT GO RIGHT ANY FURTHER")
 		return
 	inventory_selection_index += 1
-	update_inventory_button_equip()
+	# update_inventory_button_equip()
 
 
 func update_inventory_button_equip():
@@ -474,5 +532,4 @@ func _on_inventory_equip_pressed():
 	else:
 		# equip item
 		equipped = inventory_selection_index
-	update_inventory_button_equip()
-	update_inventory()
+	# update_inventory_button_equip()
