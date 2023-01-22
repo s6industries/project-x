@@ -85,6 +85,55 @@ class TestScenarioAndroid extends Scenario:
 		pass
 
 
+# func test_metabots():
+
+# 	# var agent_world = AgentWorld.new(Vector3i(num_cols, num_rows, 1), true)
+# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1), true)
+
+# 	# metabots plant potat AT
+# 	metabots[id] = [0, Vector2i(20, 10)]
+# 	var potato = metabot_world.plant_potato(id)
+# 	attach_pools_for_potato(potato)
+
+# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+# 	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
+# 	id += 1
+	
+# 	# metabots plant potat AT
+# 	metabots[id] = [0, Vector2i(40, 10)]
+# 	var potato2 = metabot_world.plant_potato(id)
+# 	attach_pools_for_potato(potato2)
+
+# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
+# 	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
+# 	id += 1
+
+
+# func test_entities_with_metabots():
+# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1), true)
+# 	agent_world.metabot_world = metabot_world
+
+# 	# TODO implement seed source (as spaceship / headquarters?)
+# 	var e_seed_locations = [
+# 		Vector3i(1, 1, 0),
+# 	]
+# 	for location in e_seed_locations:
+# 		spawn_seed(location)
+
+# 	var e_soil_locations = [
+# 		Vector3i(1, 2, 0),
+# 	]
+# 	for location in e_soil_locations:
+# 		spawn_tilled_soil(location)
+	
+# 	var e_android_locations = [
+# 		Vector3i(1, 3, 0),
+# 	]
+# 	for location in e_soil_locations:
+# 		spawn_android(location)
+
+
+
 # END TESTS
 
 
@@ -103,3 +152,4 @@ class TestScenarioAndroid extends Scenario:
 # 	pool_minerals.add(100)
 	
 # 	_self.pools.append_array([ pool_water, pool_minerals ])
+

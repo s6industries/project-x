@@ -13,6 +13,7 @@ const BLANK = " "
 const TILLED_SOIL = "="
 const POTATO_STAGE = [".", ";", "i", "P"]
 const SEED = "."
+const SPACESHIP = "S"
 
 func _init():
 	pass
@@ -78,7 +79,9 @@ func load_scenario_from_txt_map(file_path: String, world_renderer, scenario):
 			elif world_map[y2][x2] == SEED:
 				world2D.spawn_seed(new_location)
 				world_map[y2][x2] = " "
-	# add_child(agent_world)
+			elif world_map[y2][x2] == SPACESHIP:
+				world2D.spawn_spaceship(new_location)
+				world_map[y2][x2] = " "
 
 	var timekeeper = Timekeeper.new(false, agent_world, metabot_world)
 	scenario.timekeeper = timekeeper
@@ -133,74 +136,6 @@ class Timekeeper extends Node:
 		metabot_world.tick()
 		agent_world.tick()
 
-	
-# # the game world + configuration for a play session
-# # can be created from saved data (CSV, SQL)
-# class Scenario:
-
-# 	var world: World2Di
-# 	var world_renderer: WorldRenderer2Di
-
-# 	var timekeeper: Timekeeper
-# 	var auto_tick = false
-
-# 	func _init(_world_renderer: WorldRenderer2Di):
-# 		print("init Scenaroi")
-# 		world = World2Di.new()
-# 		world_renderer = _world_renderer
-# 		pass
-
-# 	func run():
-# 		pass
-
-
-# func test_metabots():
-
-# 	# var agent_world = AgentWorld.new(Vector3i(num_cols, num_rows, 1), true)
-# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1), true)
-
-# 	# metabots plant potat AT
-# 	metabots[id] = [0, Vector2i(20, 10)]
-# 	var potato = metabot_world.plant_potato(id)
-# 	attach_pools_for_potato(potato)
-
-# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
-# 	potato.connect("life_stage_progressed", self.potato_life_stage_progressed)
-# 	id += 1
-	
-# 	# metabots plant potat AT
-# 	metabots[id] = [0, Vector2i(40, 10)]
-# 	var potato2 = metabot_world.plant_potato(id)
-# 	attach_pools_for_potato(potato2)
-
-# #	potato.life_stage_progressed.connect(self.potato_life_stage_progressed.bind(stage))
-# 	potato2.connect("life_stage_progressed", self.potato_life_stage_progressed)
-# 	id += 1
-
-
-# func test_entities_with_metabots():
-# 	agent_world = AgentWorld.new(Vector3i(3, 4, 1), true)
-# 	agent_world.metabot_world = metabot_world
-
-# 	# TODO implement seed source (as spaceship / headquarters?)
-# 	var e_seed_locations = [
-# 		Vector3i(1, 1, 0),
-# 	]
-# 	for location in e_seed_locations:
-# 		spawn_seed(location)
-
-# 	var e_soil_locations = [
-# 		Vector3i(1, 2, 0),
-# 	]
-# 	for location in e_soil_locations:
-# 		spawn_tilled_soil(location)
-	
-# 	var e_android_locations = [
-# 		Vector3i(1, 3, 0),
-# 	]
-# 	for location in e_soil_locations:
-# 		spawn_android(location)
-
 
 # World2Di tracks all entities sharing a physical 2D space & time
 class World2Di extends Node:
@@ -254,6 +189,21 @@ class World2Di extends Node:
 		# which senses can detect this entity
 		detectable = ["vision"]
 		tags = ["seed", "potato"]
+		
+		# TODO implement seed source as spaceship
+		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable, tags)
+		agent_world.add_entity(e_seed, location)
+
+	
+	func spawn_spaceship(location: Vector3i):    
+		placement = ["spaceship", "grounded",]
+		# world layers which entities of type can share a world zone.
+		shareable_placement = ["grounded",]
+		# world layers which entities of type can NOT share a world zone.
+		nonshareable_placement = ["spaceship",]
+		# which senses can detect this entity
+		detectable = ["vision"]
+		tags = ["structure", "spaceship"]
 		
 		# TODO implement seed source as spaceship
 		var e_seed = AgentWorld.Entity.new(placement, shareable_placement, nonshareable_placement, detectable, tags)

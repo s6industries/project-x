@@ -47,7 +47,7 @@ _global_script_classes=[{
 "base": "RefCounted",
 "class": &"Scenario",
 "language": &"GDScript",
-"path": "res://scenario.gd"
+"path": "res://scenarios/scenario.gd"
 }, {
 "base": "Node",
 "class": &"TestClass",

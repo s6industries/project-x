@@ -3,7 +3,7 @@ extends Node
 class_name AgentWorld
 
 # https://github.com/binogure-studio/godot-uuid
-const uuid_util = preload('res://uuid.gd')
+const uuid_util = preload('res://utils/uuid.gd')
 
 var agents = []
 
