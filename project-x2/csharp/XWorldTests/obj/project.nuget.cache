@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "MkOPgtsyRGfkD899zbh7V8a1qA5qVUQ5eILecelLMEqMwUi19kVQeI1hfROkM3qPSHgTvKuE7BdESSWuLX8pZw==",
+  "dgSpecHash": "4sI78SgFdYE7azaefvs1uFvGmKIoKMlECAkP+kcMVbczfRlTj5xnWsA1zm4IWU2pc56crqj1+Afhsk7xrxkTxw==",
   "success": true,
   "projectFilePath": "/Users/artlings/Documents/GitHub/project-x/project-x2/csharp/XWorldTests/XWorldTests.csproj",
   "expectedPackageFiles": [
     "/Users/artlings/.nuget/packages/activelogic/1.3.1/activelogic.1.3.1.nupkg.sha512",
+    "/Users/artlings/.nuget/packages/astarlite/1.1.0/astarlite.1.1.0.nupkg.sha512",
     "/Users/artlings/.nuget/packages/coverlet.collector/3.1.2/coverlet.collector.3.1.2.nupkg.sha512",
     "/Users/artlings/.nuget/packages/dotnet-xunit/2.3.1/dotnet-xunit.2.3.1.nupkg.sha512",
     "/Users/artlings/.nuget/packages/libuv/1.9.0/libuv.1.9.0.nupkg.sha512",

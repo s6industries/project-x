@@ -11,6 +11,15 @@
           "lib/netcoreapp2.0/main.dll": {}
         }
       },
+      "AStarLite/1.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/AStar.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/AStar.dll": {}
+        }
+      },
       "coverlet.collector/3.1.2": {
         "type": "package",
         "build": {
@@ -2894,6 +2903,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+          "AStarLite": "1.1.0",
           "ActiveLogic": "1.3.1"
         },
         "compile": {
@@ -2916,6 +2926,20 @@
         "activelogic.1.3.1.nupkg.sha512",
         "activelogic.nuspec",
         "lib/netcoreapp2.0/main.dll"
+      ]
+    },
+    "AStarLite/1.1.0": {
+      "sha512": "kvn/+T1JzDZab7nKu9c2/3Z9iYaD1gCYVx5IwqBNpUEjDgxXfg44dzVD/xy37007dQ6lFkryRi0XsmsxotbMpg==",
+      "type": "package",
+      "path": "astarlite/1.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "astarlite.1.1.0.nupkg.sha512",
+        "astarlite.nuspec",
+        "lib/net5.0/AStar.dll",
+        "lib/net6.0/AStar.dll",
+        "lib/netstandard2.0/AStar.dll"
       ]
     },
     "coverlet.collector/3.1.2": {
