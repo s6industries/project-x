@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Nyvk7sAceAFYTHtE76LBFnCQwEDIFgCl5RFzwvd+TsdksIGSvFvj0MLqCSFcRCG9+k3EL6QiDOwia4YmptEZnw==",
+  "dgSpecHash": "IVK03he6czbAMlA/SIKxk2C50UPCb1J4ubng8+CdyJOe14PBRy99ZNayhm7detIlXveZiA3qxbZIY9QL+Ap+ag==",
   "success": true,
   "projectFilePath": "/Users/artlings/Documents/GitHub/project-x/project-x2/csharp/XWorldLibrary/XWorldLibrary.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/artlings/.nuget/packages/activelogic/1.3.1/activelogic.1.3.1.nupkg.sha512"
+  ],
   "logs": []
 }
