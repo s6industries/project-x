@@ -11,8 +11,17 @@ config_version=5
 [application]
 
 config/name="project-x2"
-config/features=PackedStringArray("4.0", "Mobile")
+run/main_scene="res://test/testRunner.tscn"
+config/features=PackedStringArray("4.0", "C#", "Mobile")
 config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="project-x2"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [rendering]
 
