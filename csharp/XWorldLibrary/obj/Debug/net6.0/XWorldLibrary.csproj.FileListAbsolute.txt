@@ -1,0 +1,12 @@
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/bin/Debug/net6.0/XWorldLibrary.deps.json
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/bin/Debug/net6.0/XWorldLibrary.dll
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/bin/Debug/net6.0/XWorldLibrary.pdb
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.csproj.AssemblyReference.cache
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.AssemblyInfoInputs.cache
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.AssemblyInfo.cs
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.csproj.CoreCompileInputs.cache
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.dll
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/refint/XWorldLibrary.dll
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/XWorldLibrary.pdb
+/Users/artlings/Documents/GitHub/project-x/csharp/XWorldLibrary/obj/Debug/net6.0/ref/XWorldLibrary.dll

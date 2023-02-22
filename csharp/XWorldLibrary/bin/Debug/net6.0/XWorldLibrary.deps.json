@@ -1,0 +1,57 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "XWorldLibrary/1.0.0": {
+        "dependencies": {
+          "AStarLite": "1.1.0",
+          "ActiveLogic": "1.3.1"
+        },
+        "runtime": {
+          "XWorldLibrary.dll": {}
+        }
+      },
+      "ActiveLogic/1.3.1": {
+        "runtime": {
+          "lib/netcoreapp2.0/main.dll": {
+            "assemblyVersion": "1.3.1.0",
+            "fileVersion": "1.3.1.0"
+          }
+        }
+      },
+      "AStarLite/1.1.0": {
+        "runtime": {
+          "lib/net6.0/AStar.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "XWorldLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ActiveLogic/1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PGm93aOZzjgxGUIy28tltGEdPec1Yx08xzyPYotK10XhU6DP8s9Kdbff87+4ev98Fz4VI7KmlOxYy6dkca/6/w==",
+      "path": "activelogic/1.3.1",
+      "hashPath": "activelogic.1.3.1.nupkg.sha512"
+    },
+    "AStarLite/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kvn/+T1JzDZab7nKu9c2/3Z9iYaD1gCYVx5IwqBNpUEjDgxXfg44dzVD/xy37007dQ6lFkryRi0XsmsxotbMpg==",
+      "path": "astarlite/1.1.0",
+      "hashPath": "astarlite.1.1.0.nupkg.sha512"
+    }
+  }
+}

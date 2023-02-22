@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://ype1ao02ivwp"]
+[gd_scene load_steps=3 format=3 uid="uid://bemsi6m8shcqq"]
 
-[ext_resource type="Script" path="res://InventoryTest.cs" id="1_gwt58"]
+[ext_resource type="Script" path="res://test/TestControl.cs" id="1_xjnto"]
+[ext_resource type="Script" path="res://test/TestControl.gd" id="2_p7raq"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -9,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_gwt58")
+script = ExtResource("1_xjnto")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
@@ -18,3 +19,9 @@ offset_top = 171.0
 offset_right = 610.0
 offset_bottom = 289.0
 text = "Start Test "
+
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_p7raq")

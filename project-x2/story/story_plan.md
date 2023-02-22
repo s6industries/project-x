@@ -80,12 +80,12 @@ as the pulsing increases within the matrtix, the fragments are shaken from their
 AS they float, the shards shrink into small polygons/cubes like crystals. 
 As each shard shrinks into its center, it also grows a circle expanding from its center. 
 The former shard, now as a small chromatic crystal, is embedded within the local circle that is a solid color.
-this chromatic prolygon embedded within a sphere = "protosoul"
+(this chromatic polygon embedded within a sphere = "protosoul")
 
 That circle cycles through solid colors at a slower frequency than the universal canvas. 
 Zoom out to see all the litte solid circles within the bigger circle, quickly blinking colors, and bouncing around among each other
 
-all the white sudden pops into many small chromatic circles. like cells multiplied
+so all the white has transformed into many small chromatic circles, like cells multiplied
 
 (the trees and the bees)
 

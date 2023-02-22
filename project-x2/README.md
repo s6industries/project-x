@@ -1,5 +1,12 @@
 # Project X (round 2)
 
+## Dependencies
+
+```
+dotnet add package AStarLite --version 1.1.0
+dotnet add package ActiveLogic
+```
+
 ## Epics & Project Languages
 
 - sprite rendering for entities: characters, objects, effects
