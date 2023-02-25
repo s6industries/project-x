@@ -12,6 +12,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xjnto")
 
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_p7raq")
+
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
 offset_left = 382.0
@@ -19,9 +25,3 @@ offset_top = 171.0
 offset_right = 610.0
 offset_bottom = 289.0
 text = "Start Test "
-
-[node name="Control" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("2_p7raq")
