@@ -1,0 +1,21 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "project-x2", "project-x2.csproj", "{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XWorldLibrary", "..\csharp\XWorldLibrary\XWorldLibrary.csproj", "{8BBD1F57-7D4A-488A-828A-1C014FB2F3B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{0B1087A7-47FA-4A0B-9F3F-B47716EFEF7C}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal
