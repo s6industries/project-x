@@ -19,6 +19,6 @@ public class XWorldState_CoreEntities
         var mechaNode = new MechaNode();
         var result = mechaNode.Info();
         
-        Assert.Matches(result, "Info");
+        Assert.Matches(result, "psimre");
     }
 }
