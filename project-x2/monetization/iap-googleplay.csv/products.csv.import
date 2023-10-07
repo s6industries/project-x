@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://p7a3c4ss7nup"
+
+[deps]
+
+files=["res://monetization/iap-googleplay.csv/products.Published State.translation", "res://monetization/iap-googleplay.csv/products.Purchase Type.translation", "res://monetization/iap-googleplay.csv/products.Auto Translate.translation", "res://monetization/iap-googleplay.csv/products.Locale; Title; Description.translation", "res://monetization/iap-googleplay.csv/products.Auto Fill Prices.translation", "res://monetization/iap-googleplay.csv/products.Price.translation", "res://monetization/iap-googleplay.csv/products.Pricing Template ID.translation"]
+
+source_file="res://monetization/iap-googleplay.csv/products.csv"
+dest_files=["res://monetization/iap-googleplay.csv/products.Published State.translation", "res://monetization/iap-googleplay.csv/products.Purchase Type.translation", "res://monetization/iap-googleplay.csv/products.Auto Translate.translation", "res://monetization/iap-googleplay.csv/products.Locale; Title; Description.translation", "res://monetization/iap-googleplay.csv/products.Auto Fill Prices.translation", "res://monetization/iap-googleplay.csv/products.Price.translation", "res://monetization/iap-googleplay.csv/products.Pricing Template ID.translation"]
+
+[params]
+
+compress=true
+delimiter=0

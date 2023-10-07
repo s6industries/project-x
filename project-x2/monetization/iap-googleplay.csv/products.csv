@@ -1,0 +1,5 @@
+Product ID,Published State,Purchase Type,Auto Translate,Locale; Title; Description,Auto Fill Prices,Price,Pricing Template ID
+standard_sleeping_potion,unpublished,managed_by_android,false,en_US; Standard Sleeping Potion; Puts all creatures to sleep for 2 minutes.,true," 1990000",
+crystals_s," published",managed_by_android,false,en_US; Small Crystals; OoOo shiny...,true," 1990000",
+solar_panel_s," published",managed_by_android,false,en_US; Small Solar Panel; Powered by sunshine,true," 990000",
+ad_blocker_s," published",managed_by_android,false,en_US; Small Solar Panel; Powered by sunshine,true,4990000,
