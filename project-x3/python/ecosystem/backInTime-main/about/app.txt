@@ -1,0 +1,101 @@
+build the cython
+python setup.py build_ext --inplace
+
+run the vanilla python version of this game:
+    python main.py
+
+run the cythonized version of this game:
+    python run.py
+
+# JUNK CODES
+
+# create chest box
+{"name": "box_1", "type": "other", "rect": "(300, 60, 60, 55)", "items": ["icon14_01"]},
+{"name": "box_1", "type": "other", "rect": "(240, 60, 60, 55)", "items": ["icon14_03"]},
+
+# animate the fight
+    def handleFight(self, enemies, screen):
+        # use space bar to fight
+        keys = pygame.key.get_just_pressed()
+
+        if self.equiped == self.weapons[0]:
+            self.Sword(screen)
+
+        if keys[pygame.K_SPACE]:
+            self.attack = True
+            for enemy in enemies:
+                if pygame.sprite.collide_rect(self, enemy):
+                    if self.left and self.rect.x > enemy.rect.x:
+                        enemy.attacked = True
+                        enemy.life -= self.power
+                        enemy.push = 10
+                    elif self.right and self.rect.x < enemy.rect.x:
+                        enemy.attacked = True
+                        enemy.life -= self.power
+                        enemy.push = 10
+                    elif self.down and self.rect.y < enemy.rect.y:
+                        enemy.attacked = True
+                        enemy.life -= self.power
+                        enemy.push = 10
+                    elif self.up and self.rect.y > enemy.rect.y:
+                        enemy.attacked = True
+                        enemy.life -= self.power
+                        enemy.push = 10
+
+    def Sword(self, screen):
+        if self.attack and self.attacking > 0:
+            if self.up:
+                screen.blit(self.sword[0], (self.rect.x, self.rect.y))
+            elif self.down:
+                screen.blit(self.sword[2], (self.rect.x-10, self.rect.y))
+            elif self.right:
+                screen.blit(self.sword[1], (self.rect.x, self.rect.y))
+            elif self.left:
+                screen.blit(self.sword[3], (self.rect.x-25, self.rect.y))
+            self.attacking -= 1
+        else:
+            self.attacking = 3
+            self.attack = False
+
+# enemy hit 
+def hit(self):
+        if self.attacked and self.push > 0:
+            if self.down:
+                self.up = True
+                self.down = False
+            elif self.up:
+                self.up = False
+                self.down = True
+            elif self.right:
+                self.right = False
+                self.left = True
+            elif self.left:
+                self.left = False
+                self.right = True
+            self.pushed = True
+        self.attacked = False
+
+    def handlePushed(self):
+        if self.pushed and self.push > 0:
+            if self.up:
+                self.move_y(-15)
+            elif self.down:
+                self.move_y(15)
+            elif self.left:
+                self.move_x(-15)
+            elif self.right:
+                self.move_x(15)
+            self.push -= 1
+        else:
+            self.pushed = False
+
+# reading data
+
+readData.strToTuple('Base')# make all string tuple in Map1 to tuple
+readData.strToTuple('Map2')
+readData.strToTuple('Map3')
+readData.strToTuple('Map4')
+readData.strToTuple('BattleGround1')
+readData.strToTuple('Enemies_m2')# read the tuple(positions) of the enemies
+# Other page
+readData.strToTuple('SelectPlayer')

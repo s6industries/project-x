@@ -1,0 +1,79 @@
+{
+    "Items": {
+        "icon14_01": {"code": "icon14_01", "name": "bronze"},
+        "icon14_02": {"code": "icon14_02", "name": "chord"},
+        "icon14_03": {"code": "icon14_03", "name": "ACC"},
+        "icon14_08": {"code": "icon14_08", "name": "Power"},
+        "icon14_09": {"code": "icon14_09", "name": "Memory Card"},
+        "icon14_16": {"code": "icon14_16", "name": "blue laser"},
+        "icon14_17": {"code": "icon14_17", "name": "pin"},
+        "icon14_26": {"code": "icon14_26", "name": "reactor"},
+        "icon14_32": {"code": "icon14_32", "name": "memory chip"},
+        "icon14_33": {"code": "icon14_33", "name": "special knot"},
+        "icon14_40": {"code": "icon14_40", "name": "power source"},
+        "icon14_38": {"code": "icon14_38", "name": "wire"},
+        "icon14_05": {"code": "icon14_05", "name": "power chord"},
+        "icon14_06": {"code": "icon14_06", "name": "particles"},
+        "icon14_18": {"code": "icon14_18", "name": "power"},
+        "icon14_10": {"code": "icon14_10", "name": "wire"},
+        "icon14_21": {"code": "icon14_21", "name": "transistor"},
+        "icon14_19": {"code": "icon14_19", "name": "power pin"},
+        "icon14_30": {"code": "icon14_30", "name": "sj30"},
+        "icon14_28": {"code": "icon14_28", "name": "turbo"},
+        "icon14_37": {"code": "icon14_37", "name": "connector"},
+        "icon14_22": {"code": "icon14_22", "name": "micro chip"},
+        "icon14_29": {"code": "icon14_29", "name": "fabric"},
+        "icon14_31": {"code": "icon14_31", "name": "ec4"},
+        "icon14_34": {"code": "icon14_34", "name": "holder"},
+        "icon14_36": {"code": "icon14_36", "name": "cover"},
+        "icon14_07": {"code": "icon14_07", "name": "pgs-107"},
+        "icon14_14": {"code": "icon14_14", "name": "sensor"},
+        "icon14_24": {"code": "icon14_24", "name": "PR97"},
+        "icon14_23": {"code": "icon14_23", "name": "PR96"},
+        "icon14_35": {"code": "icon14_35", "name": "PR97"}
+    },
+    "combination": [
+        {"result": "icon14_32", "combination": ["icon14_22", "icon14_29"], "type": "item"},
+        {"result": "icon14_26", "combination": ["icon14_31", "icon14_34"], "type": "item"},
+        {"result": "icon14_40", "combination": ["icon14_36", "icon14_01"], "type": "item"},
+        {"result": "icon14_08", "combination": ["icon14_07", "icon14_14"], "type": "item"},
+        {"result": "icon14_28", "combination": ["icon14_23", "icon14_35", "icon14_24"], "type": "item"},
+        {"result": "boomerang", "combination": ["icon14_06", "icon14_37", "icon14_03"], "type": "weapon"},
+        {"result": "bomb", "combination": ["icon14_05", "icon14_26", "icon14_33"], "type": "weapon"}
+    ],
+    "craftItems":[
+        "icon14_32",
+        "icon14_26",
+        "icon14_40",
+        "icon14_08",
+        "icon14_28",
+        "boomerang"
+    ],
+    "Collectables": [
+        {"level": 1, "collect": [
+           "icon14_05",
+           "icon14_06",
+           "icon14_18",
+           "icon14_10",
+           "icon14_38"
+        ], "name": "bossfight-one"},
+        {"level": 2, "collect": [
+            "icon14_21",
+            "icon14_19",
+            "icon14_30",
+            "icon14_28",
+            "icon14_37"
+        ], "name": "bossfight-two"},
+        {"level": 3, "collect": [
+            "icon14_02",
+            "icon14_03",
+            "icon14_08",
+            "icon14_16",
+            "icon14_17",
+            "icon14_26",
+            "icon14_32",
+            "icon14_33",
+            "icon14_40"
+        ], "name": "bossfight-three"}
+    ]
+}

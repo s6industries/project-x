@@ -1,0 +1,22 @@
+{
+    "contributers": [
+        {"name": "christian vaydal", "rule": "programmer/game artist"},
+        {"name": "aeron mhae segobia", "rule": "programmer/game artist"},
+        {"name": "ethan diego lim", "rule": "game artist"}
+    ],
+    "about":{
+        "date-started": "April 6, 2024",
+        "date-presented": "June 7, 2024",
+        "group-name": "team ace",
+        "professor": "Garry Bato-ey"
+    },
+    "characters": [
+        {"name": "ricky", "type": "main-character"},
+        {"name": "johny", "type": "main-character"},
+        {"name": "jp", "type": "main-character"},
+        {"name": "jayson", "type": "main-character"},
+        {"name": "aeron", "type": "main-vilain/boss-fight"},
+        {"name": "christian", "type": "boss-fight"},
+        {"name": "ethan", "type": "boss-fight"}
+    ]
+}

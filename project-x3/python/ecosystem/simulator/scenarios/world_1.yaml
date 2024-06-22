@@ -1,0 +1,25 @@
+{ world: { max_ticks: 35 }, regions: [
+      {
+        "type": "ground",
+        "resources":
+          {
+            "water": 10,
+            "nitrogen": 10,
+            "potassium": 10,
+            "phosphorous": 10,
+            "plant_decay": 0,
+          },
+        "qualities": { "temperature": 10, "moisture": 10, "pH": 10 },
+        "onTick": { "resources": { "water": -1 } },
+        "entities": [],
+        # "entities_by_type": {"potato": {}},
+      },
+      {
+        "type": "air",
+        "resources": { "CO2": 10, "photons": 10 },
+        "qualities":
+          { "temperature": 10, "humidity": 10, "light": { "yellow": 100 } },
+        "entities": [],
+        # "entities_by_type": {"potato": {}},
+      },
+    ], entities: [{ type: "potato", plant: { ground: 0, air: 1 } }] }
