@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6414138575694723335
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 2
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: radius
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: arcAngle
+      value: 155
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: minRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: pulseTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: blockLayer.m_Bits
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: colliders.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: colliders.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: colliders.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326316198, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: colliders.Array.data[3]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 607320012724111909, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1995945571917356402, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}
+      propertyPath: m_Name
+      value: FloorAgent (Animated)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_AddedGameObjects: []
+  m_SourcePrefab: {fileID: 100100000, guid: 545d3bc9c3894fe43b7cd5ee392d217c, type: 3}

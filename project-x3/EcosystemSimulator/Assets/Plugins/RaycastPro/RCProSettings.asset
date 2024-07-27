@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b8d92053124d40a2be8b16913ace9a, type: 3}
+  m_Name: RCProSettings
+  m_EditorClassIdentifier: 
+  realtimeEditor: 1
+  rcProInspector: 1
+  DefaultColor: {r: 0.1686275, g: 0.7764706, b: 0.8235294, a: 1}
+  DetectColor: {r: 0.3, g: 1, b: 0.3, a: 1}
+  HelperColor: {r: 1, g: 0.7, b: 0, a: 1}
+  BlockColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  normalDiscRadius: 0.2
+  elementDotSize: 0.05
+  alphaAmount: 0.2
+  gizmosOffTime: 4
+  raysStepSize: 4
+  normalFilterRadius: 1
+  linerMaxWidth: 1
+  DrawBlockLine: 1
+  DrawDetectLine: 1
+  DrawGuide: 1
+  ShowLabels: 1
+  maxSubdivideTime: 6
+  drawHierarchyIcons: 1
+  hierarchyIconsOffset: 100
