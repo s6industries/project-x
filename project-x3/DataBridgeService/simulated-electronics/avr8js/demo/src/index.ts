@@ -15,7 +15,9 @@ const socket = new WebSocket('ws://localhost:3000');
 socket.onopen = function(e) {
   console.log("[open] Connection established");
   console.log("Sending to server");
-  socket.send("My name is John");
+
+  let mcuConfig = {"m":"arduino"};
+  socket.send(JSON.stringify(mcuConfig));
 };
 
 socket.onmessage = function(event) {

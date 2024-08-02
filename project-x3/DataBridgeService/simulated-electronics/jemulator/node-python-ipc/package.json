@@ -1,0 +1,32 @@
+{
+  "name": "@atrilabs/node-python-ipc",
+  "version": "1.0.0-alpha.13",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Atri-Labs/atrilabs-engine.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "bugs": {
+    "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1"
+  }
+}
