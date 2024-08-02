@@ -55,6 +55,7 @@ def read_from_socket(socket_path):
                 # Process the received data
                 # print(f"Received: {data.decode('utf-8')}")
                 counter = counter + 1
+                sock.send(b'pong from client')
                 
         except KeyboardInterrupt:
             print("Interrupted by user.")

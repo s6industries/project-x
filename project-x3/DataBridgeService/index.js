@@ -11,6 +11,24 @@ const wss = new WebSocket.Server({ server });
 
 let clients = []
 
+function detectMessageType(data) {
+	let sendToEnvironmentSimulation = true
+	return {
+		sendToEnvironmentSimulation,
+		data
+	}
+}
+
+function sendToEnvironmentSimulation(msg, ws) {
+	// get the ws client for environment simulation
+	// client.send(msg)
+}
+
+function sendToMicrosystemSimulation(msg, ws) {
+	// get the ws client for microsystem simulation
+	// client.send(msg)
+}
+
 function checkDataForLED(data, ws) {
 
   if (data["GPIO25"] === undefined ) return;
@@ -61,6 +79,10 @@ wss.on('connection', function(ws) {
       console.log(data)
       checkDataForLED(data, ws)
       
+	  let msg = detectMessageType(data)
+	  if (msg.sendToEnvironmentSimulation) {
+		sendToEnvironmentSimulation(msg, ws)
+	  }
 
     } else {
       console.log("binary received from client -> " + Array.from(data).join(", ") + "");
