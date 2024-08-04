@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a11231538da9894d8dce88b47df6a36, type: 3}
   m_Name: example_bool_inputsEnabled
   m_EditorClassIdentifier: 
+  TagIndex: 0
+  Description: 
   _guid: 6c455a299abc5e348bd98f6344a7a512
-  _value: 1
+  _saveGuid: 0
+  _value: 0
   _debugLogEnabled: 0
   _saved: 0
+  _defaultValue: 0
   _resetOn: 1

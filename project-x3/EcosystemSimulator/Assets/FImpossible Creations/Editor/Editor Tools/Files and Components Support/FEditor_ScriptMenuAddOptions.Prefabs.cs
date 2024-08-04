@@ -115,7 +115,7 @@ namespace FIMSpace.FEditor
 
         [MenuItem("Assets/Utilities/Sub-Assets/Destroy Sub Asset", true)]
         private static bool DestroySubAssetCheck(MenuCommand menuCommand)
-        { return AssetDatabase.IsSubAsset(Selection.objects[0]); }
+        { if( Selection.objects.Length == 0 ) return false; return AssetDatabase.IsSubAsset(Selection.objects[0]); }
 
         [MenuItem("Assets/Utilities/Sub-Assets/Destroy Sub Asset", false)]
         private static void DestroySubAsset(MenuCommand menuCommand)

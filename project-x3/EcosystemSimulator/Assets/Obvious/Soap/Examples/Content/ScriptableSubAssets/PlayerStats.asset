@@ -39,7 +39,7 @@ MonoBehaviour:
   Description: 
   _guid: 44b7ad22e3f4f7e468f62aa4e623efde-3856
   _saveGuid: 0
-  _value: 100
+  _value: 0
   _debugLogEnabled: 0
   _saved: 0
   _defaultValue: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
   Description: The move speed of the player
   _guid: 44b7ad22e3f4f7e468f62aa4e623efde73984
   _saveGuid: 0
-  _value: 5
+  _value: 0
   _debugLogEnabled: 0
   _saved: 0
   _defaultValue: 0
