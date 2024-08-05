@@ -1,4 +1,8 @@
-﻿using System;
+//
+// MPTK Readme 
+// https://assetstore.unity.com/packages/tools/audio/midi-tool-kit-free-107994
+//
+using System;
 using UnityEngine;
 
 public class Readme : ScriptableObject

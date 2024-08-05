@@ -472,3 +472,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/project-x3/EcosystemSimulator/Assets/Vuplex/WebView/Standalone/Windows/Plugins
